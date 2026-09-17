@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS course_settings(id INTEGER PRIMARY KEY CHECK(id=1),title TEXT NOT NULL DEFAULT 'JTrader Core Course',price INTEGER NOT NULL DEFAULT 499,old_price INTEGER NOT NULL DEFAULT 999,access TEXT NOT NULL DEFAULT '6 months',description TEXT DEFAULT '',thumbnail_key TEXT DEFAULT '');
+INSERT OR IGNORE INTO course_settings(id,title,price,old_price,access,description,thumbnail_key) VALUES(1,'JTrader Core Course',499,999,'6 months','One focused course covering market structure, price action, chart reading and risk-aware execution.','');

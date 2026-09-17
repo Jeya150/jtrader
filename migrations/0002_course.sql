@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS users(id TEXT PRIMARY KEY,name TEXT NOT NULL,email TEXT UNIQUE NOT NULL,password_hash TEXT NOT NULL,password_salt TEXT NOT NULL,role TEXT NOT NULL DEFAULT 'student',created_at TEXT DEFAULT (datetime('now')));
+CREATE TABLE IF NOT EXISTS sessions(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,expires_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS lessons(id TEXT PRIMARY KEY,title TEXT NOT NULL,module TEXT NOT NULL,position INTEGER NOT NULL,description TEXT DEFAULT '',video_key TEXT);
+CREATE TABLE IF NOT EXISTS entitlements(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,starts_at TEXT NOT NULL,expires_at TEXT NOT NULL,payment_id TEXT);
+CREATE TABLE IF NOT EXISTS payments(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,provider_order_id TEXT UNIQUE,provider_payment_id TEXT,amount INTEGER NOT NULL,status TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS posts(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,body TEXT NOT NULL,created_at TEXT DEFAULT (datetime('now')));
+INSERT OR IGNORE INTO lessons VALUES('l1','Trading Foundations','Module 1',1,'Market structure, orders and risk basics.',NULL),('l2','Options Fundamentals','Module 1',2,'Calls, puts, premium, expiry and strike selection.',NULL),('l3','Reading the Chart','Module 2',3,'Price action, support, resistance and trend context.',NULL),('l4','Entry and Stop-Loss','Module 2',4,'Build a repeatable entry and risk framework.',NULL),('l5','Practical Trade Setup','Module 3',5,'Walk through a complete setup from plan to exit.',NULL);
