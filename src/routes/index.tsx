@@ -1,10 +1,1656 @@
-import {createFileRoute} from '@tanstack/react-router';import {useEffect,useState} from 'react';
-export const Route=createFileRoute('/')({component:Home});
-const api=(p:string,o?:RequestInit)=>fetch(p,o).then(async r=>{const x=await r.json().catch(()=>({}));if(!r.ok)throw Error(x.error||'Request failed');return x});
-function Home(){const[me,setMe]=useState<any>();const[tab,setTab]=useState('home');const[auth,setAuth]=useState<'login'|'register'>('login');const[admin,setAdmin]=useState(false);const[adminIn,setAdminIn]=useState(false);const[f,setF]=useState({name:'',email:'',password:'',city:''});const[lessons,setLessons]=useState<any[]>([]);const[posts,setPosts]=useState<any[]>([]);const[note,setNote]=useState('');useEffect(()=>{api('/api/auth').then(setMe).catch(()=>{})},[]);useEffect(()=>{if(me?.user)api('/api/data?type=lessons').then(x=>setLessons(x.lessons)).catch(()=>{});if(me?.user&&tab==='community')api('/api/data?type=community').then(x=>setPosts(x.posts)).catch(()=>{})},[me,tab]);async function submit(e:any){e.preventDefault();try{await api('/api/auth?action='+auth,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(f)});setMe(await api('/api/auth'));setNote('Account ready.')}catch(x:any){setNote(x.message)}}if(admin)return <Admin in={adminIn} close={()=>setAdmin(false)}/>;return <div className="jt"><style>{css+heroCss}</style><div className="bar">JTRADER ACADEMY <b>TRADING EDUCATION</b></div><nav className="topnav"><button className="brand" onClick={()=>setTab('home')}><img src="/assets/jtrader-logo.png" alt="JTrader"/><span>JTRADER ACADEMY</span></button><div className="links"><button onClick={()=>setTab('home')}>Home</button><button onClick={()=>setTab('course-options')}>Courses</button><button onClick={()=>setTab('community')}>Community</button></div><div className="navRight"><button className="admin" onClick={()=>setAdmin(true)}>Admin</button>{me?.user?<button className="navBtn" onClick={async()=>{await api('/api/auth?action=logout',{method:'POST'});location.reload()}}>Logout</button>:<button className="navBtn" onClick={()=>document.getElementById('join')?.scrollIntoView({behavior:'smooth'})}>Join Now</button>}</div></nav>{tab==='home'?<><section className="heroNew"><div className="heroCopy"><small>LEARN · TRADE · GROW</small><h1>JTRADER<br/><span>ACADEMY</span></h1><p className="heroLead">Practical Trading. Real Experience. For Real People.</p><p>Learn the stock market with simple strategies, real examples and practical guidance.</p><div className="heroActions"><button className="heroPrimary" onClick={()=>setTab('course-options')}>Start Learning <b>→</b></button><button className="heroGhost" onClick={()=>document.getElementById('courses')?.scrollIntoView({behavior:'smooth'})}>View Courses</button></div><div className="heroStats"><div><b>200+</b><span>Students</span></div><div><b>Real</b><span>Market Strategies</span></div><div><b>Practical</b><span>Live Examples</span></div></div></div><div className="founderStage"><div className="founderGlow"/><div className="founderFrame"><img src="/assets/jtrader-founder.jpg" alt="JTrader Academy founder"/></div><div className="founderLogo"><img src="/assets/jtrader-logo.png" alt="JTrader logo"/></div><div className="quote">Discipline<br/><i>Creates</i><br/>Freedom</div></div></section><section className="featureStrip"><div><strong>▥</strong><b>Structured Learning</b><span>From basics to advanced</span></div><div><strong>◎</strong><b>Real Market Examples</b><span>Practical & easy to follow</span></div><div><strong>♙</strong><b>Community Support</b><span>Learn together, grow together</span></div><div><strong>ϟ</strong><b>Trade with Discipline</b><span>Long term mindset</span></div></section><section className="coursesNew" id="courses"><div className="sectionHeadNew"><div><small>LEARN AT YOUR PACE</small><h2>Our Courses</h2></div><button onClick={()=>setTab('course-options')}>View All Courses →</button></div><div className="courseCardsNew"><article className="courseNew basicCourse"><div className="courseVisual"><span>BEGINNER FRIENDLY</span><div className="miniChart greenChart">↗</div></div><div className="courseBody"><h3>BASIC OF<br/>SHARE MARKET</h3><p>Understand how the share market works, key concepts, analysis basics and more. Perfect for beginners.</p><div className="courseMeta"><span>▣ 19+ Lessons</span><span>∞ Lifetime Access</span><span>♙ Certificate</span></div><div className="courseBottom"><b>₹1,500</b><button onClick={()=>setTab('course-options')}>View Course →</button></div></div></article><article className="courseNew optionCourse"><div className="courseVisual"><span>MOST POPULAR</span><div className="miniChart redChart">↗</div></div><div className="courseBody"><h3>OPTION<br/>TRADING COURSE</h3><p>Complete options trading course with strategies, risk management, live examples and trade execution.</p><div className="courseMeta"><span>▣ 40+ Lessons</span><span>◉ Live Strategies</span><span>♙ Certificate</span></div><div className="courseBottom"><b>₹9,999</b><button onClick={()=>setTab('course-options')}>View Course →</button></div></div></article></div><p className="courseQuote">“Trading is a journey, not a get rich quick scheme.” <b>— JTrader</b></p></section><section className="joinBand" id="join"><div><small>READY TO START?</small><h2>Build your trading foundation.</h2><p>Choose a course and learn with a structured, practical approach.</p></div><button className="heroPrimary" onClick={()=>setTab('course-options')}>Explore Courses →</button></section></>:tab==='course-options'?<main className="page"><section className="pageHero"><small>COURSES</small><h1>Choose your <em>learning path.</em></h1><p>Start with market fundamentals or go deeper into options trading.</p></section><div className="courses">{[['Basic of Share Market','₹1,500','green'],['Option Trading Course','₹9,999','blue']].map((c:any)=><article className="card" key={c[0]}><div className={'cover '+c[2]}><small>JTRADER ACADEMY</small><b>{c[0]}</b></div><h3>{c[0]}</h3><p>Structured lessons, practical examples and guided learning.</p><strong>{c[1]}</strong><button onClick={()=>setTab('course')}>→</button></article>)}</div></main>:tab==='community'?<main className="page"><section className="pageHero"><small>PRIVATE COMMUNITY</small><h1>Learn. Share. <em>Improve.</em></h1><p>Community access is available to active students.</p></section>{me?.user?<section className="community"><textarea placeholder="Share a trade journal note..." value={note} onChange={e=>setNote(e.target.value)}/>{posts.map((p:any)=><article key={p.id}><b>{p.title||'Community post'}</b><small>{p.body}</small></article>)}</section>:<section className="locked">Login or enroll in a course to access the private community.</section>}</main>:<main className="page"><section className="pageHero"><small>COURSE ACCESS</small><h1>Start your <em>JTrader journey.</em></h1></section><section className="signup"><div><small>ACCOUNT</small><h2>{auth==='login'?'Welcome back':'Create your account'}</h2><p>Use your account to access lessons after purchase.</p></div><form onSubmit={submit}>{auth==='register'&&<input placeholder="Full name" value={f.name} onChange={e=>setF({...f,name:e.target.value})}/>}<input placeholder="Email" type="email" value={f.email} onChange={e=>setF({...f,email:e.target.value})}/><input placeholder="Password" type="password" value={f.password} onChange={e=>setF({...f,password:e.target.value})}/>{auth==='register'&&<input placeholder="City" value={f.city} onChange={e=>setF({...f,city:e.target.value})}/>}<button className="primary">{auth==='login'?'Login →':'Create account →'}</button><button type="button" className="outline" onClick={()=>setAuth(auth==='login'?'register':'login')}>{auth==='login'?'Create account':'I already have an account'}</button>{note&&<div className="note">{note}</div>}</form></section></main>}<footer><b>JTRADER</b><small>Trading education built around discipline, practical learning and real market examples.</small><span>© 2026 JTrader Academy</span></footer></div>}
+import { createFileRoute } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
 
-const heroCss=`.topnav{height:78px}.brand{display:flex;align-items:center;gap:10px;text-align:left}.brand img{width:45px;height:45px;object-fit:contain}.brand span{font-size:13px;font-weight:900;letter-spacing:1.8px;color:#eef2f7}.navRight{display:flex;align-items:center;gap:10px}.navBtn{border:1px solid #27313d;padding:11px 17px;border-radius:8px;font-size:11px;background:#fff;color:#080a0d;font-weight:900}.heroNew{width:min(1160px,92%);margin:auto;display:grid;grid-template-columns:1fr .95fr;gap:35px;align-items:center;min-height:650px;padding:65px 0}.heroCopy>small,.sectionHeadNew small,.joinBand small{color:#8aa7ff;font-size:9px;letter-spacing:2.5px;font-weight:900}.heroCopy h1{font-size:clamp(62px,8vw,102px);line-height:.86;letter-spacing:-5px;margin:18px 0 24px;font-weight:950}.heroCopy h1 span{background:linear-gradient(110deg,#f5f7fa,#7990ad);-webkit-background-clip:text;color:transparent}.heroLead{font-size:21px!important;color:#e8edf3!important;font-weight:700;margin-bottom:3px}.heroCopy p{max-width:580px;color:#8996a6;line-height:1.7;font-size:14px}.heroActions{display:flex;gap:10px;margin-top:28px}.heroPrimary{background:#fff;color:#080a0d;padding:15px 21px;border-radius:10px;font-size:12px;font-weight:900}.heroPrimary b{margin-left:14px}.heroGhost{border:1px solid #2a3542;border-radius:10px;padding:14px 20px;color:#c5ced8;font-size:12px}.heroStats{display:flex;gap:30px;margin-top:35px}.heroStats div{padding-right:28px;border-right:1px solid #26303c}.heroStats div:last-child{border:0}.heroStats b,.heroStats span{display:block}.heroStats b{font-size:16px}.heroStats span{color:#697687;font-size:9px;margin-top:5px}.founderStage{height:570px;position:relative;display:flex;align-items:end;justify-content:center}.founderGlow{position:absolute;width:430px;height:430px;border-radius:50%;background:radial-gradient(circle,#263b58 0,transparent 68%);filter:blur(18px);top:60px}.founderFrame{position:relative;width:410px;height:540px;border-radius:25px 25px 8px 8px;overflow:hidden;border:1px solid #2b3847;background:#10151c;box-shadow:0 35px 90px #000b}.founderFrame img{width:100%;height:100%;object-fit:cover;object-position:center 32%;filter:saturate(.9) contrast(1.04)}.founderLogo{position:absolute;right:5px;top:40px;width:125px;height:125px;padding:18px;border-radius:18px;background:#07090ddd;border:1px solid #26303b;backdrop-filter:blur(12px)}.founderLogo img{width:100%;height:100%;object-fit:contain}.quote{position:absolute;left:5px;top:150px;color:#778494;font-size:23px;line-height:1.1;font-style:italic;transform:rotate(-7deg);text-shadow:0 2px 15px #000}.quote i{color:#e7edf3}.featureStrip{width:min(1160px,92%);margin:0 auto 15px;display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.featureStrip>div{min-height:90px;border:1px solid #202a36;background:#0b1017;border-radius:11px;padding:17px;display:grid;grid-template-columns:34px 1fr;align-content:center}.featureStrip strong{grid-row:span 2;font-size:23px;color:#e8eef5}.featureStrip b{font-size:11px}.featureStrip span{font-size:9px;color:#687687;margin-top:4px}.coursesNew{width:min(1160px,92%);margin:auto;padding:80px 0 100px}.sectionHeadNew{display:flex;justify-content:space-between;align-items:end;margin-bottom:28px}.sectionHeadNew h2{font-size:42px;letter-spacing:-2px;margin:7px 0 0}.sectionHeadNew>button{font-size:11px;color:#9da8b6}.courseCardsNew{display:grid;grid-template-columns:1fr 1fr;gap:16px}.courseNew{border:1px solid #25313d;border-radius:15px;overflow:hidden;background:#0b1017;position:relative}.basicCourse{border-color:#195f47}.optionCourse{border-color:#72302f}.courseVisual{height:180px;padding:16px;position:relative;overflow:hidden}.basicCourse .courseVisual{background:radial-gradient(circle at 70% 50%,#123c2d,#0a1112 62%)}.optionCourse .courseVisual{background:radial-gradient(circle at 70% 50%,#4a1518,#0e0d11 62%)}.courseVisual>span{font-size:8px;letter-spacing:1.4px;border-radius:30px;padding:8px 12px;font-weight:900}.basicCourse .courseVisual>span{background:#31d889;color:#04170d}.optionCourse .courseVisual>span{background:#f14b4b;color:#fff}.miniChart{position:absolute;right:25px;bottom:-12px;font-size:125px;font-weight:900;line-height:1;transform:rotate(-8deg)}.greenChart{color:#30d987;text-shadow:0 0 30px #20bb7133}.redChart{color:#ee4545;text-shadow:0 0 30px #e33b3b33}.courseBody{padding:23px}.courseBody h3{font-size:27px;line-height:.95;margin:0 0 13px;letter-spacing:-1px}.courseBody p{color:#7d8997;font-size:11px;line-height:1.65;max-width:430px;min-height:48px}.courseMeta{display:flex;gap:15px;flex-wrap:wrap;color:#6f7c8b;font-size:9px;margin:17px 0}.courseBottom{display:flex;justify-content:space-between;align-items:center;margin-top:17px}.courseBottom>b{font-size:28px}.basicCourse .courseBottom>b{color:#35e395}.optionCourse .courseBottom>b{color:#ff4e4e}.courseBottom button{background:#fff;color:#090b0e;padding:12px 16px;border-radius:8px;font-size:10px;font-weight:900}.courseQuote{margin:35px 0 0;color:#8893a1;font-style:italic;font-size:12px}.courseQuote b{display:block;color:#e7edf4;margin-top:9px}.joinBand{width:min(1160px,92%);margin:0 auto 90px;border:1px solid #283441;border-radius:15px;background:linear-gradient(100deg,#0e141c,#0a0e14);padding:35px 42px;display:flex;justify-content:space-between;align-items:center}.joinBand h2{font-size:31px;letter-spacing:-1px;margin:8px 0}.joinBand p{color:#758291;font-size:11px}.joinBand .heroPrimary{white-space:nowrap}@media(max-width:850px){.heroNew{grid-template-columns:1fr;padding:50px 0}.founderStage{height:500px}.founderFrame{width:min(360px,90%);height:470px}.founderLogo{right:0}.quote{left:0}.featureStrip,.courseCardsNew{grid-template-columns:1fr}.sectionHeadNew{display:block}.sectionHeadNew>button{margin-top:10px}.joinBand{display:block;padding:28px}.joinBand .heroPrimary{margin-top:15px}.heroStats{gap:15px}.heroStats div{padding-right:14px}}`;
+export const Route = createFileRoute('/')({
+  component: Home,
+})
 
-function Admin({in:setIn,close}:any){const[email,setEmail]=useState(''),[pw,setPw]=useState(''),[search,setSearch]=useState(''),[rows,setRows]=useState<any[]>([]),[lessons,setLessons]=useState<any[]>([]),[settings,setSettings]=useState<any>({title:'JTrader Core Course',price:499,oldPrice:999,access:'6 months',description:'',thumbnail_key:''}),[tab,setTab]=useState('overview'),[form,setForm]=useState<any>({id:'',title:'',module:'Module 1',description:'',position:1}),[file,setFile]=useState<File|null>(null),[thumb,setThumb]=useState<File|null>(null),[err,setErr]=useState(''),[loading,setLoading]=useState(false),[notice,setNotice]=useState('');async function load(){const d=await api('/api/admin');setRows(d.students||[]);setLessons(d.lessons||[]);setSettings(d.settings||settings)}async function enter(){setErr('');setLoading(true);try{await api('/api/auth?action=login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});const me=await api('/api/auth');if(me?.user?.role!=='admin')throw new Error('Admin access only');await load();setIn(true)}catch(e:any){setErr(e.message||'Invalid admin login')}finally{setLoading(false)}}async function saveSettings(){const fd=new FormData();fd.append('action','settings');fd.append('title',settings.title);fd.append('price',String(settings.price));fd.append('oldPrice',String(settings.oldPrice));fd.append('access',settings.access);fd.append('description',settings.description);if(thumb)fd.append('thumbnail',thumb);try{const d=await api('/api/admin',{method:'POST',body:fd});setSettings(d.settings);setThumb(null);setNotice('Course settings saved.')}catch(e:any){setErr(e.message)}}async function saveLesson(){const fd=new FormData();fd.append('action',form.id?'lesson-update':'lesson-create');fd.append('id',form.id);fd.append('title',form.title);fd.append('module',form.module);fd.append('description',form.description);fd.append('position',String(form.position));if(file)fd.append('video',file);try{await api('/api/admin',{method:'POST',body:fd});setForm({id:'',title:'',module:'Module 1',description:'',position:lessons.length+1});setFile(null);await load();setNotice('Lesson saved.')}catch(e:any){setErr(e.message)}}async function removeLesson(id:string){if(!confirm('Delete this lesson?'))return;try{await api('/api/admin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'lesson-delete',id})});await load()}catch(e:any){setErr(e.message)}}const filtered=rows.filter(r=>`${r.name} ${r.email} ${r.city}`.toLowerCase().includes(search.toLowerCase()));const paid=rows.filter(r=>r.status==='Paid').length;const revenue=rows.reduce((n,r)=>n+Number(r.amount||0),0);return <div className="adminPage"><div className="adminTop"><button onClick={close}>← Website</button><b>JTRADER / ADMIN</b></div>{!setIn?<div className="adminLogin"><div className="lock">⌘</div><small>PRIVATE ADMIN AREA</small><h1>Admin login</h1><p>Only the authorized administrator can manage course content and enrollment data.</p><input placeholder="Admin email" value={email} onChange={e=>setEmail(e.target.value)}/><input placeholder="Password" type="password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={e=>e.key==='Enter'&&enter()}/><button className="primary full" onClick={enter} disabled={loading}>{loading?'Checking…':'Enter Dashboard →'}</button>{err&&<small className="demo" style={{color:'#ff7b7b'}}>{err}</small>}</div>:<div className="dashboard"><div className="adminNav"><button className={tab==='overview'?'active':''} onClick={()=>setTab('overview')}>Overview</button><button className={tab==='course'?'active':''} onClick={()=>setTab('course-options')}>Courses Manager</button><button className={tab==='settings'?'active':''} onClick={()=>setTab('settings')}>Course Settings</button><button className="outline" onClick={()=>setIn(false)}>Lock</button></div>{err&&<div className="notice error">{err}</div>}{notice&&<div className="notice">{notice}</div>}{tab==='overview'?<><div className="head"><div><small>PRIVATE ADMIN DASHBOARD</small><h2>Enrollment overview</h2></div></div><div className="stats"><div><small>TOTAL ENROLLED</small><b>{rows.length}</b></div><div><small>PAID</small><b>{paid}</b></div><div><small>REVENUE</small><b>₹{revenue.toLocaleString('en-IN')}</b></div></div><div className="table"><div className="tableHead"><h3>Students</h3><input placeholder="Search name, email or city" value={search} onChange={e=>setSearch(e.target.value)}/></div><div className="row th">STUDENT　 EMAIL　 CITY　 ENROLLED　 AMOUNT　 STATUS</div>{filtered.map(r=><div className="row" key={r.email}><b>{r.name}</b><span>{r.email}</span><span>📍 {r.city||'—'}</span><span>{new Date(r.created_at.replace(' ','T')+'Z').toLocaleString('en-IN')}</span><span>₹{Number(r.amount||0).toLocaleString('en-IN')}</span><span className={r.status==='Paid'?'paid':''}>● {r.status}</span></div>)}</div></>:tab==='course'?<div className="managerGrid"><section className="manageCard"><small>LESSON MANAGER</small><h2>{form.id?'Edit lesson':'Add new lesson'}</h2><input placeholder="Lesson title" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/><input placeholder="Module e.g. Module 1" value={form.module} onChange={e=>setForm({...form,module:e.target.value})}/><input placeholder="Position" type="number" value={form.position} onChange={e=>setForm({...form,position:Number(e.target.value)})}/><textarea placeholder="Lesson description" value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/><label className="upload"><b>🎬 Upload lesson video</b><span>{file?.name||'Choose MP4 / WebM video'}</span><input type="file" accept="video/mp4,video/webm,video/quicktime" onChange={e=>setFile(e.target.files?.[0]||null)}/></label><div className="acts"><button className="primary" onClick={saveLesson}>Save lesson</button>{form.id&&<button className="outline" onClick={()=>setForm({id:'',title:'',module:'Module 1',description:'',position:lessons.length+1})}>Cancel</button>}</div></section><section className="manageCard"><small>YOUR COURSE</small><h2>{lessons.length} lessons</h2>{lessons.map((l:any,i:number)=><div className="lessonAdmin" key={l.id}><div><b>{String(i+1).padStart(2,'0')} · {l.title}</b><small>{l.module} · {l.available?'Video uploaded':'No video'}</small></div><div><button onClick={()=>setForm({...l})}>Edit</button><button onClick={()=>removeLesson(l.id)}>Delete</button></div></div>)}</section></div>:<section className="manageCard settingsCard"><small>COURSE CONFIGURATION</small><h2>Control what students see</h2><div className="settingsGrid"><label>Course title<input value={settings.title} onChange={e=>setSettings({...settings,title:e.target.value})}/></label><label>Price (₹)<input type="number" value={settings.price} onChange={e=>setSettings({...settings,price:Number(e.target.value)})}/></label><label>Old price (₹)<input type="number" value={settings.old_price??settings.oldPrice} onChange={e=>setSettings({...settings,old_price:Number(e.target.value)})}/></label><label>Access period<input value={settings.access} onChange={e=>setSettings({...settings,access:e.target.value})}/></label></div><label>Description<textarea value={settings.description} onChange={e=>setSettings({...settings,description:e.target.value})}/></label><label className="upload"><b>🖼 Upload course thumbnail</b><span>{thumb?.name||'Choose JPG / PNG / WebP'}</span><input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>setThumb(e.target.files?.[0]||null)}/></label><button className="primary" onClick={saveSettings}>Save course settings</button></section>}</div>}</div>}
+const api = async (path: string, options?: RequestInit) => {
+  const response = await fetch(path, options)
+  const data = await response.json().catch(() => ({}))
 
-const css=`*{box-sizing:border-box}body{margin:0;background:#07090d;color:#f4f7fb;font-family:Inter,system-ui,sans-serif}.jt{min-height:100vh;background:#07090d}button{font:inherit;cursor:pointer;color:inherit;background:none;border:0}.bar{height:32px;border-bottom:1px solid #171d26;text-align:center;color:#687586;font-size:9px;letter-spacing:1.5px;padding:9px}.bar b{color:#fff;margin-left:12px}nav{height:78px;border-bottom:1px solid #171d26;background:#080b10ee;backdrop-filter:blur(15px);display:flex;align-items:center;justify-content:space-between;padding:0 max(4%,calc((100% - 1160px)/2));position:sticky;top:0;z-index:20}.logo{text-align:left;font-size:23px;font-weight:900}.logo small{display:block;color:#647183;font-size:7px;letter-spacing:2px}.logo span{color:#4d8dff}.links{display:flex;gap:30px}.links button,.admin{color:#8591a0;font-size:12px}.outline{border:1px solid #27313d;padding:10px 14px;border-radius:8px;font-size:12px}.admin{margin-right:10px}.hero{width:min(1160px,92%);margin:auto;display:grid;grid-template-columns:1.05fr .95fr;gap:65px;align-items:center;padding:90px 0}.ey{color:#5f8fff;font-size:9px;letter-spacing:2px}.hero h1{font-size:clamp(50px,7vw,82px);line-height:.93;letter-spacing:-4px;margin:18px 0}.hero h1 em,.pageHero em,.cta em{font-style:normal;color:#7189ae}.hero p,.pageHero p{max-width:620px;color:#919cab;line-height:1.7;font-size:16px}.acts{display:flex;gap:10px;margin-top:27px;flex-wrap:wrap}.primary{background:#fff;color:#080a0d;padding:14px 20px;border-radius:9px;font-weight:900;font-size:12px}.trust{color:#657181;font-size:9px;margin-top:20px}.terminal{border:1px solid #2a3542;background:#0a0e14;border-radius:15px;padding:12px;box-shadow:0 30px 70px #0008}.term{height:34px;color:#596777;font-size:8px;border-bottom:1px solid #202936}.term b{margin-left:10px}.term span{float:right}.chart{height:290px;margin-top:13px;border:1px solid #202a35;border-radius:8px;background:repeating-linear-gradient(0deg,transparent 0 47px,#19212c 48px),repeating-linear-gradient(90deg,transparent 0 65px,#19212c 66px);color:#55e0d0;position:relative}.chart svg{width:100%;height:100%}.chart i{position:absolute;right:10px;top:10px;color:#4d5a6b;font-size:8px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}.metrics b{font-size:8px;color:#647183;background:#101620;border:1px solid #202a35;border-radius:7px;padding:9px}.metrics strong{color:#e1e8ef;font-size:10px}.ticker{border-top:1px solid #161d26;border-bottom:1px solid #161d26;text-align:center;padding:15px;color:#697586;font-size:9px;letter-spacing:1px}.ticker b{color:#d2dae4}.section,.page{width:min(1160px,92%);margin:auto;padding:90px 0}.head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:35px}.head small,.pageHero small,.enroll>small,.signup small,.adminLogin>small,.dashboard small{font-size:8px;color:#5f8fff;letter-spacing:2px;font-weight:900}.head h2,.dashboard h2{font-size:42px;line-height:1;letter-spacing:-2px;margin:8px 0}.head p{max-width:430px;color:#788494;font-size:12px;line-height:1.7}.features,.courses{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.feature,.step,.card{border:1px solid #202a36;background:#0c1118;border-radius:12px;padding:25px}.feature{min-height:220px}.feature>small,.step small{color:#5f8fff}.feature h3{margin-top:55px}.feature p,.feature a,.step p,.card p{color:#778392;font-size:12px;line-height:1.6}.dark{border-block:1px solid #161d26;background:#0b0f15;padding:90px max(4%,calc((100% - 1160px)/2))}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.step h3{margin-top:40px}.cover{height:190px;border-radius:9px;position:relative;padding:15px;overflow:hidden}.cover.blue{background:radial-gradient(circle at 70% 30%,#28548f,#0b1119 60%)}.cover.green{background:radial-gradient(circle at 30% 70%,#1d6158,#0b1118 60%)}.cover.gold{background:radial-gradient(circle at 70% 40%,#705622,#0e0e0b 60%)}.cover small{color:#b7c2d0;font-size:8px;letter-spacing:2px}.cover b{position:absolute;left:15px;bottom:15px;font-size:22px;line-height:1}.card{padding:8px;text-align:left}.courseChoice{display:block;width:100%;border:1px solid #202a36}.courseChoice>strong{display:block;padding:8px 8px 4px;font-size:22px;color:#fff}.courseChoice p{min-height:38px}.card h3,.card p,.card>strong{margin-left:8px}.card>button{float:right;margin:0 8px 8px;width:35px;height:35px;background:#fff;color:#000;border-radius:8px}.cta{width:min(1160px,92%);margin:0 auto 90px;border:1px solid #293442;border-radius:15px;padding:50px;background:#0d131b;display:flex;justify-content:space-between;align-items:center}.cta h2{font-size:40px;letter-spacing:-2px}.pageHero{padding:20px 0 55px}.pageHero h1{font-size:54px;letter-spacing:-3px;line-height:1}.courseGrid{display:grid;grid-template-columns:1.5fr .7fr;gap:15px}.lessonList,.enroll,.signup,.community,.locked,.table{border:1px solid #202a36;background:#0c1118;border-radius:13px}.lessonList header{display:flex;justify-content:space-between;padding:22px;border-bottom:1px solid #202a36}.lessonList header h2{margin:8px 0;font-size:23px}.lesson{display:grid;grid-template-columns:40px 1fr 25px;gap:12px;padding:18px 22px;border-bottom:1px solid #1a222d}.lesson:last-child{border:0}.lesson>strong{color:#5f8fff}.lesson h3{margin:5px 0;font-size:15px}.lesson p{margin:0;color:#707c8a;font-size:11px}.lesson small{color:#687586;font-size:8px}.enroll{padding:23px;height:max-content;position:sticky;top:105px}.enroll h2{font-size:22px}.price{font-size:30px}.price s{font-size:12px;color:#5d6877}.enroll p,.enroll li{color:#7a8695;font-size:11px;line-height:1.7}.enroll ul{padding-left:17px}.full{width:100%;margin-top:10px}.signup{margin-top:15px;padding:25px;display:grid;grid-template-columns:1fr 1fr;gap:40px}.signup form{display:grid;gap:8px}.signup input,.adminLogin input,.tableHead input{background:#090d13;border:1px solid #27313d;border-radius:8px;padding:12px;color:#fff;outline:0}.community{padding:20px}.community textarea{width:100%;height:110px;background:#090d13;border:1px solid #27313d;border-radius:8px;color:#fff;padding:12px}.community article{border-top:1px solid #202a36;padding:16px 0}.community article small{color:#667384;margin-left:10px}.locked{text-align:center;padding:70px;color:#7b8795}.adminNav{display:flex;gap:8px;align-items:center;margin:28px 0}.adminNav button{padding:10px 14px;border:1px solid #202a36;border-radius:8px;color:#7e8998;font-size:11px}.adminNav .active{background:#fff;color:#080a0d}.managerGrid{display:grid;grid-template-columns:1fr 1.2fr;gap:14px}.manageCard{border:1px solid #202a36;background:#0c1118;border-radius:13px;padding:24px}.manageCard h2{font-size:25px;margin:8px 0 20px}.manageCard input,.manageCard textarea,.settingsCard input,.settingsCard textarea{width:100%;background:#090d13;border:1px solid #27313d;border-radius:8px;padding:12px;color:#fff;outline:0;margin:5px 0}.manageCard textarea,.settingsCard textarea{min-height:100px;resize:vertical}.upload{display:block;border:1px dashed #344253;border-radius:9px;padding:15px;margin:10px 0;cursor:pointer}.upload b,.upload span{display:block;font-size:11px}.upload span{color:#697586;margin-top:5px}.upload input{display:none}.lessonAdmin{display:flex;justify-content:space-between;gap:12px;border-top:1px solid #202a36;padding:14px 0}.lessonAdmin b,.lessonAdmin small{display:block}.lessonAdmin small{color:#687586;margin-top:5px}.lessonAdmin button{font-size:10px;color:#9aa6b4;margin-left:12px}.settingsGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.settingsCard>label{display:block;color:#7f8a99;font-size:10px;margin-top:10px}.notice.error{color:#ff8a8a}@media(max-width:850px){.managerGrid,.settingsGrid{grid-template-columns:1fr}.adminNav{overflow:auto}}.accessBar{width:min(1160px,92%);margin:0 auto 15px;border:1px solid #263342;background:#0c1118;border-radius:10px;padding:13px 16px;display:flex;justify-content:space-between;gap:12px;font-size:10px;color:#7f8b9a}.accessBar span{color:#55e0d0;font-weight:900}.lockedBar span{color:#f0b45d}.lessonVideo{display:block;width:100%;max-width:620px;margin-top:14px;border:1px solid #27313d;border-radius:8px;background:#05070a}.videoPending{display:block;margin-top:12px;color:#697586}.adminPage{min-height:calc(100vh - 32px);padding:30px 4%;background:#070a0e}.adminTop{display:flex;justify-content:space-between;border-bottom:1px solid #1a222c;padding-bottom:20px;color:#8b96a5;font-size:11px}.adminLogin{width:min(430px,100%);margin:80px auto;border:1px solid #27313d;background:#0c1118;border-radius:15px;padding:35px;text-align:center}.lock{font-size:25px;margin-bottom:15px;color:#6d9bff}.adminLogin h1{font-size:31px;margin:10px}.adminLogin p,.demo{color:#748091;font-size:11px;line-height:1.6}.adminLogin input{width:100%;margin:5px 0}.demo{display:block;margin-top:16px}.dashboard{width:min(1180px,100%);margin:45px auto}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:25px 0 15px}.stats div{border:1px solid #202a36;background:#0c1118;border-radius:11px;padding:20px}.stats b{display:block;font-size:27px;margin-top:8px}.table{overflow:hidden}.tableHead{display:flex;justify-content:space-between;align-items:center;padding:18px;border-bottom:1px solid #202a36}.tableHead input{width:280px}.row{min-width:850px;display:grid;grid-template-columns:1.1fr 1.35fr 1fr 1fr .7fr .7fr;gap:12px;padding:15px 18px;border-bottom:1px solid #1a222c;color:#8994a3;font-size:10px}.row:last-child{border:0}.row b{color:#edf2f7}.th{color:#596778;font-size:8px;letter-spacing:1px}.paid{color:#55e0d0}footer{border-top:1px solid #161d26;padding:38px max(4%,calc((100% - 1160px)/2));display:flex;gap:25px;justify-content:space-between;color:#657181;font-size:10px}footer b{font-size:19px;color:#fff}footer small{max-width:330px}@media(max-width:850px){.links{display:none}.hero,.courseGrid,.signup{grid-template-columns:1fr}.hero{padding:60px 0}.hero h1{font-size:50px}.features,.courses,.steps,.stats{grid-template-columns:1fr}.head{display:block}.head p{margin-top:15px}.cta{display:block;padding:35px 25px}.cta .primary{margin-top:20px}.enroll{position:static}.pageHero h1{font-size:43px}.tableHead{display:block}.tableHead input{width:100%;margin-top:10px}footer{display:block}.admin{display:none}}`;
+  if (!response.ok) {
+    throw new Error(data.error || 'Request failed')
+  }
+
+  return data
+}
+
+type Course = {
+  id: 'basic' | 'options'
+  name: string
+  price: number
+  oldPrice: number
+  description: string
+  lessons: string
+  badge: string
+  theme: 'green' | 'red'
+}
+
+const COURSES: Course[] = [
+  {
+    id: 'basic',
+    name: 'Basic of Share Market',
+    price: 1500,
+    oldPrice: 1999,
+    description:
+      'Understand how the share market works, key concepts, analysis basics and more. Perfect for beginners.',
+    lessons: '19+ Lessons',
+    badge: 'BEGINNER FRIENDLY',
+    theme: 'green',
+  },
+  {
+    id: 'options',
+    name: 'Option Trading Course',
+    price: 9999,
+    oldPrice: 12999,
+    description:
+      'Complete options trading course with strategies, risk management, live examples and trade execution.',
+    lessons: '40+ Lessons',
+    badge: 'MOST POPULAR',
+    theme: 'red',
+  },
+]
+
+function loadRazorpayScript() {
+  return new Promise<boolean>((resolve) => {
+    if (document.getElementById('razorpay-checkout')) {
+      resolve(true)
+      return
+    }
+
+    const script = document.createElement('script')
+    script.id = 'razorpay-checkout'
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+    script.onload = () => resolve(true)
+    script.onerror = () => resolve(false)
+
+    document.body.appendChild(script)
+  })
+}
+
+function Home() {
+  const [me, setMe] = useState<any>(null)
+  const [tab, setTab] = useState('home')
+  const [auth, setAuth] = useState<'login' | 'register'>('login')
+  const [admin, setAdmin] = useState(false)
+  const [adminIn, setAdminIn] = useState(false)
+
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
+  const [paying, setPaying] = useState(false)
+  const [paymentMessage, setPaymentMessage] = useState('')
+
+  const [f, setF] = useState({
+    name: '',
+    email: '',
+    password: '',
+    city: '',
+  })
+
+  const [lessons, setLessons] = useState<any[]>([])
+  const [posts, setPosts] = useState<any[]>([])
+  const [note, setNote] = useState('')
+
+  useEffect(() => {
+    api('/api/auth')
+      .then(setMe)
+      .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    if (me?.user) {
+      api('/api/data?type=lessons')
+        .then((x) => setLessons(x.lessons || []))
+        .catch(() => {})
+    }
+
+    if (me?.user && tab === 'community') {
+      api('/api/data?type=community')
+        .then((x) => setPosts(x.posts || []))
+        .catch(() => {})
+    }
+  }, [me, tab])
+
+  async function submit(e: any) {
+    e.preventDefault()
+
+    try {
+      await api('/api/auth?action=' + auth, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(f),
+      })
+
+      setMe(await api('/api/auth'))
+      setNote('Account ready.')
+    } catch (error: any) {
+      setNote(error.message)
+    }
+  }
+
+  function chooseCourse(course: Course) {
+    setSelectedCourse(course)
+    setTab('course')
+    setPaymentMessage('')
+  }
+
+  async function startPayment(course: Course) {
+    setPaymentMessage('')
+
+    if (!me?.user) {
+      setSelectedCourse(course)
+      setTab('account')
+      setAuth('login')
+      setPaymentMessage('Please login or create an account before payment.')
+      return
+    }
+
+    setPaying(true)
+
+    try {
+      const loaded = await loadRazorpayScript()
+
+      if (!loaded) {
+        throw new Error('Razorpay Checkout failed to load.')
+      }
+
+      const order = await api('/api/payments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          courseId: course.id,
+          amount: course.price,
+        }),
+      })
+
+      const Razorpay = (window as any).Razorpay
+
+      if (!Razorpay) {
+        throw new Error('Razorpay is not available.')
+      }
+
+      const options = {
+        key: order.keyId,
+        amount: order.amount,
+        currency: order.currency || 'INR',
+        name: 'JTrader Academy',
+        description: course.name,
+        order_id: order.orderId,
+
+        prefill: {
+          name: me.user.name || '',
+          email: me.user.email || '',
+        },
+
+        theme: {
+          color: '#111827',
+        },
+
+        handler: async function (response: any) {
+          setPaymentMessage(
+            'Payment received. Verification is being completed...'
+          )
+
+          /*
+           * Signature verification + entitlement creation
+           * will be connected in the backend next.
+           */
+
+          console.log('Razorpay payment:', response)
+
+          setPaymentMessage(
+            'Payment completed successfully. Your course access will be activated after verification.'
+          )
+        },
+
+        modal: {
+          ondismiss: function () {
+            setPaying(false)
+            setPaymentMessage('Payment window closed.')
+          },
+        },
+      }
+
+      const checkout = new Razorpay(options)
+
+      checkout.on('payment.failed', function (response: any) {
+        console.error(response)
+
+        setPaying(false)
+        setPaymentMessage(
+          response?.error?.description || 'Payment failed. Please try again.'
+        )
+      })
+
+      checkout.open()
+    } catch (error: any) {
+      setPaymentMessage(error.message || 'Unable to start payment.')
+      setPaying(false)
+    }
+  }
+
+  if (admin) {
+    return (
+      <Admin
+        in={adminIn}
+        close={() => setAdmin(false)}
+      />
+    )
+  }
+
+  return (
+    <div className="jt">
+      <style>{css + heroCss}</style>
+
+      <div className="bar">
+        JTRADER ACADEMY <b>TRADING EDUCATION</b>
+      </div>
+
+      <nav className="topnav">
+        <button
+          className="brand"
+          onClick={() => setTab('home')}
+        >
+          <img
+            src="/assets/jtrader-logo.png"
+            alt="JTrader"
+          />
+          <span>JTRADER ACADEMY</span>
+        </button>
+
+        <div className="links">
+          <button onClick={() => setTab('home')}>Home</button>
+          <button onClick={() => setTab('course-options')}>
+            Courses
+          </button>
+          <button onClick={() => setTab('community')}>
+            Community
+          </button>
+        </div>
+
+        <div className="navRight">
+          <button
+            className="admin"
+            onClick={() => setAdmin(true)}
+          >
+            Admin
+          </button>
+
+          {me?.user ? (
+            <button
+              className="navBtn"
+              onClick={async () => {
+                await api('/api/auth?action=logout', {
+                  method: 'POST',
+                })
+
+                location.reload()
+              }}
+            >
+              Logout
+            </button>
+          ) : (
+            <button
+              className="navBtn"
+              onClick={() => setTab('account')}
+            >
+              Login
+            </button>
+          )}
+        </div>
+      </nav>
+
+      {tab === 'home' && (
+        <>
+          <section className="heroNew">
+            <div className="heroCopy">
+              <small>LEARN · TRADE · GROW</small>
+
+              <h1>
+                JTRADER
+                <br />
+                <span>ACADEMY</span>
+              </h1>
+
+              <p className="heroLead">
+                Practical Trading. Real Experience. For Real People.
+              </p>
+
+              <p>
+                Learn the stock market with simple strategies,
+                real examples and practical guidance.
+              </p>
+
+              <div className="heroActions">
+                <button
+                  className="heroPrimary"
+                  onClick={() => setTab('course-options')}
+                >
+                  Start Learning <b>→</b>
+                </button>
+
+                <button
+                  className="heroGhost"
+                  onClick={() =>
+                    document
+                      .getElementById('courses')
+                      ?.scrollIntoView({ behavior: 'smooth' })
+                  }
+                >
+                  View Courses
+                </button>
+              </div>
+            </div>
+
+            <div className="founderStage">
+              <div className="founderGlow" />
+
+              <div className="founderFrame">
+                <img
+                  src="/assets/jtrader-founder.jpg"
+                  alt="JTrader Academy founder"
+                />
+              </div>
+
+              <div className="founderLogo">
+                <img
+                  src="/assets/jtrader-logo.png"
+                  alt="JTrader logo"
+                />
+              </div>
+
+              <div className="quote">
+                Discipline
+                <br />
+                <i>Creates</i>
+                <br />
+                Freedom
+              </div>
+            </div>
+          </section>
+
+          <section
+            className="coursesNew"
+            id="courses"
+          >
+            <div className="sectionHeadNew">
+              <div>
+                <small>LEARN AT YOUR PACE</small>
+                <h2>Our Courses</h2>
+              </div>
+
+              <button
+                onClick={() => setTab('course-options')}
+              >
+                View All Courses →
+              </button>
+            </div>
+
+            <div className="courseCardsNew">
+              {COURSES.map((course) => (
+                <article
+                  className={`courseNew ${course.theme}Course`}
+                  key={course.id}
+                >
+                  <div className="courseVisual">
+                    <span>{course.badge}</span>
+                    <div className="miniChart">
+                      ↗
+                    </div>
+                  </div>
+
+                  <div className="courseBody">
+                    <h3>
+                      {course.id === 'basic' ? (
+                        <>
+                          BASIC OF
+                          <br />
+                          SHARE MARKET
+                        </>
+                      ) : (
+                        <>
+                          OPTION
+                          <br />
+                          TRADING COURSE
+                        </>
+                      )}
+                    </h3>
+
+                    <p>{course.description}</p>
+
+                    <div className="courseMeta">
+                      <span>▣ {course.lessons}</span>
+                      <span>◉ 6 Month Access</span>
+                      <span>♙ Certificate</span>
+                    </div>
+
+                    <div className="courseBottom">
+                      <b>
+                        ₹{course.price.toLocaleString('en-IN')}
+                      </b>
+
+                      <button
+                        onClick={() => chooseCourse(course)}
+                      >
+                        View Course →
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+
+      {tab === 'course-options' && (
+        <main className="page">
+          <section className="pageHero">
+            <small>COURSES</small>
+            <h1>
+              Choose your <em>learning path.</em>
+            </h1>
+
+            <p>
+              Start with market fundamentals or go deeper
+              into options trading.
+            </p>
+          </section>
+
+          <div className="courses courseTwo">
+            {COURSES.map((course) => (
+              <article
+                className="card"
+                key={course.id}
+              >
+                <div className={`cover ${course.theme}`}>
+                  <small>JTRADER ACADEMY</small>
+
+                  <b>{course.name}</b>
+                </div>
+
+                <h3>{course.name}</h3>
+
+                <p>{course.description}</p>
+
+                <strong>
+                  ₹{course.price.toLocaleString('en-IN')}
+                </strong>
+
+                <button
+                  onClick={() => chooseCourse(course)}
+                >
+                  →
+                </button>
+              </article>
+            ))}
+          </div>
+        </main>
+      )}
+
+      {tab === 'course' && selectedCourse && (
+        <main className="page">
+          <section className="pageHero">
+            <small>COURSE ACCESS</small>
+
+            <h1>
+              {selectedCourse.name}
+            </h1>
+
+            <p>{selectedCourse.description}</p>
+          </section>
+
+          <div className="courseGrid">
+            <section className="lessonList">
+              <header>
+                <div>
+                  <small>COURSE CONTENT</small>
+                  <h2>
+                    {selectedCourse.lessons}
+                  </h2>
+                </div>
+              </header>
+
+              {lessons.length > 0 ? (
+                lessons.map((lesson: any, index) => (
+                  <div
+                    className="lesson"
+                    key={lesson.id}
+                  >
+                    <strong>
+                      {String(index + 1).padStart(2, '0')}
+                    </strong>
+
+                    <div>
+                      <h3>{lesson.title}</h3>
+                      <p>
+                        {lesson.description ||
+                          'Practical JTrader lesson.'}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <>
+                  {Array.from({
+                    length:
+                      selectedCourse.id === 'basic'
+                        ? 6
+                        : 8,
+                  }).map((_, index) => (
+                    <div
+                      className="lesson"
+                      key={index}
+                    >
+                      <strong>
+                        {String(index + 1).padStart(2, '0')}
+                      </strong>
+
+                      <div>
+                        <h3>
+                          {selectedCourse.id === 'basic'
+                            ? `Share Market Lesson ${index + 1}`
+                            : `Options Trading Lesson ${index + 1}`}
+                        </h3>
+
+                        <p>
+                          Course lesson content.
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+            </section>
+
+            <aside className="enroll">
+              <small>ENROLL NOW</small>
+
+              <h2>{selectedCourse.name}</h2>
+
+              <div className="price">
+                ₹
+                {selectedCourse.price.toLocaleString(
+                  'en-IN'
+                )}
+              </div>
+
+              <p>
+                One-time payment for course access.
+              </p>
+
+              <ul>
+                <li>Structured lessons</li>
+                <li>Practical examples</li>
+                <li>6 month access</li>
+                <li>Certificate</li>
+              </ul>
+
+              <button
+                className="primary full"
+                onClick={() =>
+                  startPayment(selectedCourse)
+                }
+                disabled={paying}
+              >
+                {paying
+                  ? 'Opening Razorpay...'
+                  : `Buy Now — ₹${selectedCourse.price.toLocaleString(
+                      'en-IN'
+                    )}`}
+              </button>
+
+              {paymentMessage && (
+                <div className="paymentMessage">
+                  {paymentMessage}
+                </div>
+              )}
+
+              <button
+                className="outline full"
+                onClick={() =>
+                  setTab('course-options')
+                }
+              >
+                ← Back to Courses
+              </button>
+            </aside>
+          </div>
+        </main>
+      )}
+
+      {tab === 'account' && (
+        <main className="page">
+          <section className="pageHero">
+            <small>ACCOUNT</small>
+
+            <h1>
+              Start your <em>JTrader journey.</em>
+            </h1>
+
+            <p>
+              Login or create an account before purchasing
+              your course.
+            </p>
+          </section>
+
+          <section className="signup">
+            <div>
+              <small>JTRADER ACADEMY</small>
+
+              <h2>
+                {auth === 'login'
+                  ? 'Welcome back'
+                  : 'Create your account'}
+              </h2>
+
+              <p>
+                Your account will be used to manage your
+                course access.
+              </p>
+            </div>
+
+            <form onSubmit={submit}>
+              {auth === 'register' && (
+                <input
+                  placeholder="Full name"
+                  value={f.name}
+                  onChange={(e) =>
+                    setF({
+                      ...f,
+                      name: e.target.value,
+                    })
+                  }
+                />
+              )}
+
+              <input
+                placeholder="Email"
+                type="email"
+                value={f.email}
+                onChange={(e) =>
+                  setF({
+                    ...f,
+                    email: e.target.value,
+                  })
+                }
+              />
+
+              <input
+                placeholder="Password"
+                type="password"
+                value={f.password}
+                onChange={(e) =>
+                  setF({
+                    ...f,
+                    password: e.target.value,
+                  })
+                }
+              />
+
+              {auth === 'register' && (
+                <input
+                  placeholder="City"
+                  value={f.city}
+                  onChange={(e) =>
+                    setF({
+                      ...f,
+                      city: e.target.value,
+                    })
+                  }
+                />
+              )}
+
+              <button className="primary">
+                {auth === 'login'
+                  ? 'Login →'
+                  : 'Create account →'}
+              </button>
+
+              <button
+                type="button"
+                className="outline"
+                onClick={() =>
+                  setAuth(
+                    auth === 'login'
+                      ? 'register'
+                      : 'login'
+                  )
+                }
+              >
+                {auth === 'login'
+                  ? 'Create account'
+                  : 'I already have an account'}
+              </button>
+
+              {note && (
+                <div className="note">
+                  {note}
+                </div>
+              )}
+
+              {paymentMessage && (
+                <div className="paymentMessage">
+                  {paymentMessage}
+                </div>
+              )}
+            </form>
+          </section>
+        </main>
+      )}
+
+      {tab === 'community' && (
+        <main className="page">
+          <section className="pageHero">
+            <small>PRIVATE COMMUNITY</small>
+
+            <h1>
+              Learn. Share. <em>Improve.</em>
+            </h1>
+
+            <p>
+              Community access is available to active
+              students.
+            </p>
+          </section>
+
+          {me?.user ? (
+            <section className="community">
+              <textarea
+                placeholder="Share a trade journal note..."
+                value={note}
+                onChange={(e) =>
+                  setNote(e.target.value)
+                }
+              />
+
+              {posts.map((post: any) => (
+                <article key={post.id}>
+                  <b>
+                    {post.title || 'Community post'}
+                  </b>
+
+                  <small>{post.body}</small>
+                </article>
+              ))}
+            </section>
+          ) : (
+            <section className="locked">
+              Login or enroll in a course to access
+              the private community.
+            </section>
+          )}
+        </main>
+      )}
+
+      <footer>
+        <b>JTRADER</b>
+
+        <small>
+          Trading education built around discipline,
+          practical learning and real market examples.
+        </small>
+
+        <span>© 2026 JTrader Academy</span>
+      </footer>
+    </div>
+  )
+}
+
+function Admin({
+  in: adminIn,
+  close,
+}: any) {
+  const [email, setEmail] = useState('')
+  const [pw, setPw] = useState('')
+  const [err, setErr] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  async function enter() {
+    setErr('')
+    setLoading(true)
+
+    try {
+      await api('/api/auth?action=login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password: pw,
+        }),
+      })
+
+      const me = await api('/api/auth')
+
+      if (me?.user?.role !== 'admin') {
+        throw new Error('Admin access only')
+      }
+
+      adminIn(true)
+    } catch (e: any) {
+      setErr(e.message || 'Invalid admin login')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (!adminIn) {
+    return (
+      <div className="adminPage">
+        <div className="adminTop">
+          <button onClick={close}>
+            ← Website
+          </button>
+
+          <b>JTRADER / ADMIN</b>
+        </div>
+
+        <div className="adminLogin">
+          <div className="lock">⌘</div>
+
+          <small>PRIVATE ADMIN AREA</small>
+
+          <h1>Admin login</h1>
+
+          <p>
+            Only the authorized administrator can
+            manage course content and enrollment data.
+          </p>
+
+          <input
+            placeholder="Admin email"
+            value={email}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
+          />
+
+          <input
+            placeholder="Password"
+            type="password"
+            value={pw}
+            onChange={(e) =>
+              setPw(e.target.value)
+            }
+            onKeyDown={(e) =>
+              e.key === 'Enter' && enter()
+            }
+          />
+
+          <button
+            className="primary full"
+            onClick={enter}
+            disabled={loading}
+          >
+            {loading
+              ? 'Checking...'
+              : 'Enter Dashboard →'}
+          </button>
+
+          {err && (
+            <small className="demo errorText">
+              {err}
+            </small>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="adminPage">
+      <div className="adminTop">
+        <button onClick={close}>
+          ← Website
+        </button>
+
+        <b>JTRADER / ADMIN</b>
+      </div>
+
+      <div className="dashboard">
+        <div className="head">
+          <div>
+            <small>PRIVATE ADMIN DASHBOARD</small>
+            <h2>Course Manager</h2>
+          </div>
+        </div>
+
+        <div className="managerGrid">
+          {COURSES.map((course) => (
+            <section
+              className="manageCard"
+              key={course.id}
+            >
+              <small>
+                {course.id === 'basic'
+                  ? 'BASIC COURSE'
+                  : 'OPTIONS COURSE'}
+              </small>
+
+              <h2>{course.name}</h2>
+
+              <label>
+                Price (₹)
+
+                <input
+                  type="number"
+                  defaultValue={course.price}
+                />
+              </label>
+
+              <label>
+                Description
+
+                <textarea
+                  defaultValue={course.description}
+                />
+              </label>
+
+              <button
+                className="primary"
+                type="button"
+                onClick={() =>
+                  alert(
+                    'Price settings will be connected to the database in the next backend step.'
+                  )
+                }
+              >
+                Save Course Settings
+              </button>
+            </section>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const heroCss = `
+.topnav{
+  height:78px;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-align:left;
+}
+.brand img{
+  width:45px;
+  height:45px;
+  object-fit:contain;
+}
+.brand span{
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:1.8px;
+}
+.navRight{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.navBtn{
+  border:1px solid #27313d;
+  padding:11px 17px;
+  border-radius:8px;
+  font-size:11px;
+  background:#fff;
+  color:#080a0d;
+  font-weight:900;
+}
+.heroNew{
+  width:min(1160px,92%);
+  margin:auto;
+  display:grid;
+  grid-template-columns:1fr .95fr;
+  gap:35px;
+  align-items:center;
+  min-height:650px;
+  padding:65px 0;
+}
+.heroCopy>small,
+.sectionHeadNew small{
+  color:#8aa7ff;
+  font-size:9px;
+  letter-spacing:2.5px;
+  font-weight:900;
+}
+.heroCopy h1{
+  font-size:clamp(62px,8vw,102px);
+  line-height:.86;
+  letter-spacing:-5px;
+  margin:18px 0 24px;
+  font-weight:950;
+}
+.heroCopy h1 span{
+  background:linear-gradient(110deg,#f5f7fa,#7990ad);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+.heroLead{
+  font-size:21px!important;
+  color:#e8edf3!important;
+  font-weight:700;
+}
+.heroCopy p{
+  max-width:580px;
+  color:#8996a6;
+  line-height:1.7;
+  font-size:14px;
+}
+.heroActions{
+  display:flex;
+  gap:10px;
+  margin-top:28px;
+}
+.heroPrimary{
+  background:#fff;
+  color:#080a0d;
+  padding:15px 21px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:900;
+}
+.heroGhost{
+  border:1px solid #2a3542;
+  border-radius:10px;
+  padding:14px 20px;
+  color:#c5ced8;
+  font-size:12px;
+}
+.founderStage{
+  height:570px;
+  position:relative;
+  display:flex;
+  align-items:end;
+  justify-content:center;
+}
+.founderGlow{
+  position:absolute;
+  width:430px;
+  height:430px;
+  border-radius:50%;
+  background:radial-gradient(circle,#263b58 0,transparent 68%);
+  filter:blur(18px);
+  top:60px;
+}
+.founderFrame{
+  position:relative;
+  width:410px;
+  height:540px;
+  border-radius:25px 25px 8px 8px;
+  overflow:hidden;
+  border:1px solid #2b3847;
+  background:#10151c;
+}
+.founderFrame img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 32%;
+}
+.founderLogo{
+  position:absolute;
+  right:5px;
+  top:40px;
+  width:125px;
+  height:125px;
+  padding:18px;
+  border-radius:18px;
+  background:#07090ddd;
+  border:1px solid #26303b;
+}
+.founderLogo img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+.quote{
+  position:absolute;
+  left:5px;
+  top:150px;
+  color:#778494;
+  font-size:23px;
+  line-height:1.1;
+  font-style:italic;
+  transform:rotate(-7deg);
+}
+.quote i{
+  color:#e7edf3;
+}
+.coursesNew{
+  width:min(1160px,92%);
+  margin:auto;
+  padding:80px 0 100px;
+}
+.sectionHeadNew{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin-bottom:28px;
+}
+.sectionHeadNew h2{
+  font-size:42px;
+  letter-spacing:-2px;
+  margin:7px 0 0;
+}
+.courseCardsNew{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+.courseNew{
+  border:1px solid #25313d;
+  border-radius:15px;
+  overflow:hidden;
+  background:#0b1017;
+}
+.greenCourse{
+  border-color:#195f47;
+}
+.redCourse{
+  border-color:#72302f;
+}
+.courseVisual{
+  height:180px;
+  padding:16px;
+  position:relative;
+  overflow:hidden;
+}
+.greenCourse .courseVisual{
+  background:radial-gradient(circle at 70% 50%,#123c2d,#0a1112 62%);
+}
+.redCourse .courseVisual{
+  background:radial-gradient(circle at 70% 50%,#4a1518,#0e0d11 62%);
+}
+.courseVisual>span{
+  font-size:8px;
+  letter-spacing:1.4px;
+  border-radius:30px;
+  padding:8px 12px;
+  font-weight:900;
+  background:#fff;
+  color:#080a0d;
+}
+.miniChart{
+  position:absolute;
+  right:25px;
+  bottom:-12px;
+  font-size:125px;
+  font-weight:900;
+  line-height:1;
+  transform:rotate(-8deg);
+}
+.greenCourse .miniChart{
+  color:#30d987;
+}
+.redCourse .miniChart{
+  color:#ee4545;
+}
+.courseBody{
+  padding:23px;
+}
+.courseBody h3{
+  font-size:27px;
+  line-height:.95;
+  margin:0 0 13px;
+  letter-spacing:-1px;
+}
+.courseBody p{
+  color:#7d8997;
+  font-size:11px;
+  line-height:1.65;
+  min-height:48px;
+}
+.courseMeta{
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+  color:#6f7c8b;
+  font-size:9px;
+  margin:17px 0;
+}
+.courseBottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:17px;
+}
+.courseBottom>b{
+  font-size:28px;
+}
+.greenCourse .courseBottom>b{
+  color:#35e395;
+}
+.redCourse .courseBottom>b{
+  color:#ff4e4e;
+}
+.courseBottom button{
+  background:#fff;
+  color:#090b0e;
+  padding:12px 16px;
+  border-radius:8px;
+  font-size:10px;
+  font-weight:900;
+}
+.paymentMessage{
+  margin-top:12px;
+  padding:10px;
+  border:1px solid #27313d;
+  border-radius:8px;
+  color:#9aa6b4;
+  font-size:10px;
+  line-height:1.5;
+}
+@media(max-width:850px){
+  .heroNew{
+    grid-template-columns:1fr;
+    padding:50px 0;
+  }
+  .founderStage{
+    height:500px;
+  }
+  .founderFrame{
+    width:min(360px,90%);
+    height:470px;
+  }
+  .courseCardsNew{
+    grid-template-columns:1fr;
+  }
+  .sectionHeadNew{
+    display:block;
+  }
+}
+`
+
+const css = `
+*{
+  box-sizing:border-box;
+}
+body{
+  margin:0;
+  background:#07090d;
+  color:#f4f7fb;
+  font-family:Inter,system-ui,sans-serif;
+}
+button{
+  font:inherit;
+  cursor:pointer;
+  color:inherit;
+  background:none;
+  border:0;
+}
+.bar{
+  height:32px;
+  border-bottom:1px solid #171d26;
+  text-align:center;
+  color:#687586;
+  font-size:9px;
+  letter-spacing:1.5px;
+  padding:9px;
+}
+.bar b{
+  color:#fff;
+  margin-left:12px;
+}
+nav{
+  border-bottom:1px solid #171d26;
+  background:#080b10ee;
+  backdrop-filter:blur(15px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 max(4%,calc((100% - 1160px)/2));
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+.links{
+  display:flex;
+  gap:30px;
+}
+.links button,
+.admin{
+  color:#8591a0;
+  font-size:12px;
+}
+.page{
+  width:min(1160px,92%);
+  margin:auto;
+  padding:90px 0;
+}
+.pageHero{
+  padding:20px 0 55px;
+}
+.pageHero small,
+.signup small,
+.adminLogin>small,
+.dashboard small{
+  font-size:8px;
+  color:#5f8fff;
+  letter-spacing:2px;
+  font-weight:900;
+}
+.pageHero h1{
+  font-size:54px;
+  letter-spacing:-3px;
+  line-height:1;
+}
+.pageHero em{
+  color:#7189ae;
+  font-style:normal;
+}
+.pageHero p{
+  max-width:620px;
+  color:#919cab;
+  line-height:1.7;
+  font-size:16px;
+}
+.courses{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.card{
+  border:1px solid #202a36;
+  background:#0c1118;
+  border-radius:12px;
+  padding:8px;
+}
+.cover{
+  height:190px;
+  border-radius:9px;
+  position:relative;
+  padding:15px;
+  overflow:hidden;
+}
+.cover.green{
+  background:radial-gradient(circle at 30% 70%,#1d6158,#0b1118 60%);
+}
+.cover.red{
+  background:radial-gradient(circle at 70% 40%,#4a1518,#0e0d11 60%);
+}
+.cover small{
+  color:#b7c2d0;
+  font-size:8px;
+  letter-spacing:2px;
+}
+.cover b{
+  position:absolute;
+  left:15px;
+  bottom:15px;
+  font-size:22px;
+  line-height:1;
+  max-width:75%;
+}
+.card h3,
+.card p,
+.card>strong{
+  margin-left:8px;
+}
+.card p{
+  color:#778392;
+  font-size:12px;
+  line-height:1.6;
+}
+.card>strong{
+  font-size:24px;
+}
+.card>button{
+  float:right;
+  margin:0 8px 8px;
+  width:35px;
+  height:35px;
+  background:#fff;
+  color:#000;
+  border-radius:8px;
+}
+.courseGrid{
+  display:grid;
+  grid-template-columns:1.5fr .7fr;
+  gap:15px;
+}
+.lessonList,
+.enroll,
+.signup,
+.community,
+.locked{
+  border:1px solid #202a36;
+  background:#0c1118;
+  border-radius:13px;
+}
+.lessonList header{
+  padding:22px;
+  border-bottom:1px solid #202a36;
+}
+.lessonList header h2{
+  margin:8px 0;
+  font-size:23px;
+}
+.lesson{
+  display:grid;
+  grid-template-columns:40px 1fr;
+  gap:12px;
+  padding:18px 22px;
+  border-bottom:1px solid #1a222d;
+}
+.lesson>strong{
+  color:#5f8fff;
+}
+.lesson h3{
+  margin:5px 0;
+  font-size:15px;
+}
+.lesson p{
+  margin:0;
+  color:#707c8a;
+  font-size:11px;
+}
+.enroll{
+  padding:23px;
+  height:max-content;
+  position:sticky;
+  top:105px;
+}
+.enroll h2{
+  font-size:22px;
+}
+.price{
+  font-size:30px;
+}
+.enroll p,
+.enroll li{
+  color:#7a8695;
+  font-size:11px;
+  line-height:1.7;
+}
+.enroll ul{
+  padding-left:17px;
+}
+.primary{
+  background:#fff;
+  color:#080a0d;
+  padding:14px 20px;
+  border-radius:9px;
+  font-weight:900;
+  font-size:12px;
+}
+.full{
+  width:100%;
+  margin-top:10px;
+}
+.outline{
+  border:1px solid #27313d;
+  padding:10px 14px;
+  border-radius:8px;
+  font-size:12px;
+}
+.signup{
+  margin-top:15px;
+  padding:25px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:40px;
+}
+.signup form{
+  display:grid;
+  gap:8px;
+}
+.signup input,
+.adminLogin input,
+.manageCard input,
+.manageCard textarea{
+  background:#090d13;
+  border:1px solid #27313d;
+  border-radius:8px;
+  padding:12px;
+  color:#fff;
+  outline:0;
+  width:100%;
+}
+.signup input{
+  margin:0;
+}
+.community{
+  padding:20px;
+}
+.community textarea{
+  width:100%;
+  height:110px;
+  background:#090d13;
+  border:1px solid #27313d;
+  border-radius:8px;
+  color:#fff;
+  padding:12px;
+}
+.community article{
+  border-top:1px solid #202a36;
+  padding:16px 0;
+}
+.community article small{
+  color:#667384;
+  margin-left:10px;
+}
+.locked{
+  text-align:center;
+  padding:70px;
+  color:#7b8795;
+}
+.adminPage{
+  min-height:100vh;
+  padding:30px 4%;
+  background:#070a0e;
+}
+.adminTop{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid #1a222c;
+  padding-bottom:20px;
+  color:#8b96a5;
+  font-size:11px;
+}
+.adminLogin{
+  width:min(430px,100%);
+  margin:80px auto;
+  border:1px solid #27313d;
+  background:#0c1118;
+  border-radius:15px;
+  padding:35px;
+  text-align:center;
+}
+.lock{
+  font-size:25px;
+  margin-bottom:15px;
+  color:#6d9bff;
+}
+.adminLogin h1{
+  font-size:31px;
+  margin:10px;
+}
+.adminLogin p,
+.demo{
+  color:#748091;
+  font-size:11px;
+  line-height:1.6;
+}
+.errorText{
+  display:block;
+  color:#ff7b7b!important;
+  margin-top:15px;
+}
+.dashboard{
+  width:min(1180px,100%);
+  margin:45px auto;
+}
+.managerGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.manageCard{
+  border:1px solid #202a36;
+  background:#0c1118;
+  border-radius:13px;
+  padding:24px;
+}
+.manageCard h2{
+  font-size:23px;
+  margin:8px 0 20px;
+}
+.manageCard label{
+  display:block;
+  color:#7f8a99;
+  font-size:10px;
+  margin-top:12px;
+}
+.manageCard textarea{
+  min-height:110px;
+  resize:vertical;
+}
+.manageCard .primary{
+  margin-top:15px;
+}
+footer{
+  border-top:1px solid #161d26;
+  padding:38px max(4%,calc((100% - 1160px)/2));
+  display:flex;
+  gap:25px;
+  justify-content:space-between;
+  color:#657181;
+  font-size:10px;
+}
+footer b{
+  font-size:19px;
+  color:#fff;
+}
+footer small{
+  max-width:330px;
+}
+@media(max-width:850px){
+  .links{
+    display:none;
+  }
+  .courses,
+  .courseGrid,
+  .signup,
+  .managerGrid{
+    grid-template-columns:1fr;
+  }
+  .enroll{
+    position:static;
+  }
+  .pageHero h1{
+    font-size:43px;
+  }
+  footer{
+    display:block;
+  }
+}
+`
