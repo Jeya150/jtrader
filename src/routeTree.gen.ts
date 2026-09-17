@@ -12,11 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiAuthRouteImport } from './routes/api/auth'
-import { Route as ApiDataRouteImport } from './routes/api/data'
-import { Route as ApiAdminRouteImport } from './routes/api/admin'
-import { Route as ApiMediaRouteImport } from './routes/api/media'
 import { Route as ApiVideoRouteImport } from './routes/api/video'
+import { Route as ApiPaymentsRouteImport } from './routes/api/payments'
+import { Route as ApiMediaRouteImport } from './routes/api/media'
+import { Route as ApiDataRouteImport } from './routes/api/data'
+import { Route as ApiAuthRouteImport } from './routes/api/auth'
+import { Route as ApiAdminRouteImport } from './routes/api/admin'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -28,14 +29,39 @@ const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiAuthRoute = ApiAuthRouteImport.update({ id: '/api/auth', path: '/api/auth', getParentRoute: () => rootRouteImport } as any)
-const ApiDataRoute = ApiDataRouteImport.update({ id: '/api/data', path: '/api/data', getParentRoute: () => rootRouteImport } as any)
-const ApiAdminRoute = ApiAdminRouteImport.update({ id: '/api/admin', path: '/api/admin', getParentRoute: () => rootRouteImport } as any)
-const ApiMediaRoute = ApiMediaRouteImport.update({ id: '/api/media', path: '/api/media', getParentRoute: () => rootRouteImport } as any)
-const ApiVideoRoute = ApiVideoRouteImport.update({ id: '/api/video', path: '/api/video', getParentRoute: () => rootRouteImport } as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiVideoRoute = ApiVideoRouteImport.update({
+  id: '/api/video',
+  path: '/api/video',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPaymentsRoute = ApiPaymentsRouteImport.update({
+  id: '/api/payments',
+  path: '/api/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMediaRoute = ApiMediaRouteImport.update({
+  id: '/api/media',
+  path: '/api/media',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDataRoute = ApiDataRouteImport.update({
+  id: '/api/data',
+  path: '/api/data',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthRoute = ApiAuthRouteImport.update({
+  id: '/api/auth',
+  path: '/api/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminRoute = ApiAdminRouteImport.update({
+  id: '/api/admin',
+  path: '/api/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -43,20 +69,22 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/admin': typeof ApiAdminRoute
   '/api/auth': typeof ApiAuthRoute
   '/api/data': typeof ApiDataRoute
-  '/api/admin': typeof ApiAdminRoute
   '/api/media': typeof ApiMediaRoute
+  '/api/payments': typeof ApiPaymentsRoute
   '/api/video': typeof ApiVideoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/admin': typeof ApiAdminRoute
   '/api/auth': typeof ApiAuthRoute
   '/api/data': typeof ApiDataRoute
-  '/api/admin': typeof ApiAdminRoute
   '/api/media': typeof ApiMediaRoute
+  '/api/payments': typeof ApiPaymentsRoute
   '/api/video': typeof ApiVideoRoute
 }
 export interface FileRoutesById {
@@ -64,24 +92,59 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/admin': typeof ApiAdminRoute
   '/api/auth': typeof ApiAuthRoute
   '/api/data': typeof ApiDataRoute
-  '/api/admin': typeof ApiAdminRoute
   '/api/media': typeof ApiMediaRoute
+  '/api/payments': typeof ApiPaymentsRoute
   '/api/video': typeof ApiVideoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/robots.txt' | '/sitemap.xml' | '/api/auth' | '/api/data' | '/api/admin' | '/api/media' | '/api/video'
+  fullPaths:
+    | '/'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/api/admin'
+    | '/api/auth'
+    | '/api/data'
+    | '/api/media'
+    | '/api/payments'
+    | '/api/video'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/robots.txt' | '/sitemap.xml' | '/api/auth' | '/api/data' | '/api/admin' | '/api/media' | '/api/video'
-  id: '__root__' | '/' | '/robots.txt' | '/sitemap.xml' | '/api/auth' | '/api/data' | '/api/admin' | '/api/media' | '/api/video'
+  to:
+    | '/'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/api/admin'
+    | '/api/auth'
+    | '/api/data'
+    | '/api/media'
+    | '/api/payments'
+    | '/api/video'
+  id:
+    | '__root__'
+    | '/'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/api/admin'
+    | '/api/auth'
+    | '/api/data'
+    | '/api/media'
+    | '/api/payments'
+    | '/api/video'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiAdminRoute: typeof ApiAdminRoute
+  ApiAuthRoute: typeof ApiAuthRoute
+  ApiDataRoute: typeof ApiDataRoute
+  ApiMediaRoute: typeof ApiMediaRoute
+  ApiPaymentsRoute: typeof ApiPaymentsRoute
+  ApiVideoRoute: typeof ApiVideoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -100,11 +163,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/data': { id: '/api/data', path: '/api/data', fullPath: '/api/data', preLoaderRoute: typeof ApiDataRouteImport, parentRoute: typeof rootRouteImport }
-    '/api/admin': { id: '/api/admin', path: '/api/admin', fullPath: '/api/admin', preLoaderRoute: typeof ApiAdminRouteImport, parentRoute: typeof rootRouteImport }
-    '/api/media': { id: '/api/media', path: '/api/media', fullPath: '/api/media', preLoaderRoute: typeof ApiMediaRouteImport, parentRoute: typeof rootRouteImport }
-    '/api/video': { id: '/api/video', path: '/api/video', fullPath: '/api/video', preLoaderRoute: typeof ApiVideoRouteImport, parentRoute: typeof rootRouteImport }
-    '/api/auth': { id: '/api/auth', path: '/api/auth', fullPath: '/api/auth', preLoaderRoute: typeof ApiAuthRouteImport, parentRoute: typeof rootRouteImport }
     '/': {
       id: '/'
       path: '/'
@@ -112,18 +170,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/video': {
+      id: '/api/video'
+      path: '/api/video'
+      fullPath: '/api/video'
+      preLoaderRoute: typeof ApiVideoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payments': {
+      id: '/api/payments'
+      path: '/api/payments'
+      fullPath: '/api/payments'
+      preLoaderRoute: typeof ApiPaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/media': {
+      id: '/api/media'
+      path: '/api/media'
+      fullPath: '/api/media'
+      preLoaderRoute: typeof ApiMediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/data': {
+      id: '/api/data'
+      path: '/api/data'
+      fullPath: '/api/data'
+      preLoaderRoute: typeof ApiDataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth': {
+      id: '/api/auth'
+      path: '/api/auth'
+      fullPath: '/api/auth'
+      preLoaderRoute: typeof ApiAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin': {
+      id: '/api/admin'
+      path: '/api/admin'
+      fullPath: '/api/admin'
+      preLoaderRoute: typeof ApiAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ApiAuthRoute: ApiAuthRoute,
-  ApiDataRoute: ApiDataRoute,
-  ApiAdminRoute: ApiAdminRoute,
-  ApiMediaRoute: ApiMediaRoute,
-  ApiVideoRoute: ApiVideoRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiAdminRoute: ApiAdminRoute,
+  ApiAuthRoute: ApiAuthRoute,
+  ApiDataRoute: ApiDataRoute,
+  ApiMediaRoute: ApiMediaRoute,
+  ApiPaymentsRoute: ApiPaymentsRoute,
+  ApiVideoRoute: ApiVideoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
