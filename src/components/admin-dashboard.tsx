@@ -13,70 +13,54 @@ const api = (path: string, options?: RequestInit) => fetch(path, options).then(a
 });
 
 /*
- * One chunk of a multipart upload. fetch cannot report upload progress, so
- * the parts go up over XHR — that is the only way to drive a real percentage
- * rather than a bar that jumps from 0 to 100.
+ * jtrader.in sits behind a gateway that rejects any request body over
+ * 100KiB before it reaches the Worker at all, so the video cannot be
+ * posted to our own API in any form, chunked or not. Instead the browser
+ * PUTs the file straight to R2 using a short-lived presigned URL — that
+ * request goes to R2's own endpoint, not jtrader.in, so the gateway never
+ * sees it.
+ *
+ * fetch cannot report upload progress, so the PUT goes over XHR — that is
+ * the only way to drive a real percentage rather than a bar that jumps
+ * from 0 to 100.
  */
-const sendPart = (url: string, chunk: Blob, onBytes: (loaded: number) => void) =>
-  new Promise<{partNumber: number; etag: string}>((resolve, reject) => {
+const putWithProgress = (url: string, file: File, onPercent: (pct: number) => void) =>
+  new Promise<void>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', url);
-    xhr.upload.onprogress = event => { if (event.lengthComputable) onBytes(event.loaded); };
-    xhr.onload = () => {
-      let data: any = {};
-      try { data = JSON.parse(xhr.responseText); } catch { /* non-JSON error page */ }
-      if (xhr.status >= 200 && xhr.status < 300) resolve(data);
-      else reject(Error(data.error || `Upload failed (${xhr.status})`));
+    xhr.open('PUT', url);
+    xhr.setRequestHeader('Content-Type', file.type);
+    xhr.upload.onprogress = event => {
+      if (event.lengthComputable) onPercent(Math.min(99, Math.round((event.loaded / event.total) * 100)));
     };
+    xhr.onload = () => (xhr.status >= 200 && xhr.status < 300) ? resolve() : reject(Error(`Upload failed (${xhr.status})`));
     xhr.onerror = () => reject(Error('Network error during upload'));
     xhr.onabort = () => reject(Error('Upload cancelled'));
-    xhr.send(chunk);
+    xhr.send(file);
   });
 
 /*
- * Slice the video into parts and push them to R2 one at a time, reporting
- * percent complete as bytes land. Returns the finished object key.
+ * Ask the server for a presigned URL, upload directly to R2, and return
+ * the finished object key.
  */
 async function uploadVideo(file: File, onPercent: (pct: number) => void) {
-  const {key, uploadId, partSize} = await api('/api/upload?action=create', {
+  const {key, uploadUrl} = await api('/api/upload?action=presign', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({contentType: file.type, size: file.size}),
-  }) as {key: string; uploadId: string; partSize: number};
-
-  const parts: {partNumber: number; etag: string}[] = [];
-  let sent = 0;
+  }) as {key: string; uploadUrl: string};
 
   try {
-    const count = Math.ceil(file.size / partSize);
-
-    for (let i = 0; i < count; i++) {
-      const chunk = file.slice(i * partSize, (i + 1) * partSize);
-      const query = `key=${encodeURIComponent(key)}&uploadId=${encodeURIComponent(uploadId)}&part=${i + 1}`;
-
-      // Hold at 99 until complete lands, so the bar never sits full while
-      // R2 is still stitching the parts together.
-      parts.push(await sendPart(`/api/upload?action=part&${query}`, chunk,
-        loaded => onPercent(Math.min(99, Math.round(((sent + loaded) / file.size) * 100)))));
-
-      sent += chunk.size;
-      onPercent(Math.min(99, Math.round((sent / file.size) * 100)));
-    }
-
-    await api('/api/upload?action=complete', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({key, uploadId, parts}),
-    });
-
+    await putWithProgress(uploadUrl, file, onPercent);
     onPercent(100);
     return key;
   } catch (cause) {
-    // Leave no half-written parts billing against the bucket.
-    void api('/api/upload?action=abort', {
+    // The object may have landed in R2 even though the browser saw the
+    // request fail (e.g. a timeout after the bytes finished sending), so
+    // don't leave it orphaned with no lesson pointing at it.
+    void api('/api/upload?action=discard', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({key, uploadId}),
+      body: JSON.stringify({key}),
     }).catch(() => {});
     throw cause;
   }

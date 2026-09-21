@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { AwsClient } from 'aws4fetch';
 import { user } from '../../lib/course.server';
 import { bindings } from '../../lib/bindings.server';
 import { ADMIN_EMAIL } from '../../lib/config.server';
@@ -11,22 +12,20 @@ const guard = async (r: Request) => {
 };
 
 /*
- * Chunked video upload.
+ * Presigned direct-to-R2 upload.
  *
- * Posting a whole video to /api/admin sends it through the Worker in one
- * request, which Cloudflare rejects with 413 once the body passes the plan
- * limit (100MB on free/pro) — and even under that it would buffer the file
- * into the Worker's 128MB of memory.
+ * jtrader.in sits behind a gateway that rejects any request body over
+ * 102400 bytes (100KiB) with a 413 before it ever reaches this Worker —
+ * confirmed by probing the live endpoint. That is far below R2's 5MiB
+ * multipart-part minimum, so no chunk size posted through the Worker can
+ * ever get a video here.
  *
- * So the browser slices the file and sends one part per request against R2's
- * multipart API instead. Every request stays small, and the client knows how
- * many bytes have landed, which is what drives the progress bar.
+ * So the video never touches this Worker at all: the browser PUTs the file
+ * straight to R2's S3-compatible endpoint using a short-lived presigned
+ * URL, which this route only generates. That request goes to
+ * accountid.r2.cloudflarestorage.com, not jtrader.in, so the gateway's body
+ * cap never applies to it.
  */
-
-// R2 requires every part except the last to be the same size and at least
-// 5MiB. 10MiB keeps each request far below the body cap while staying well
-// inside the 10,000-part ceiling.
-const PART_SIZE = 10 * 1024 * 1024;
 
 const MAX_BYTES = 500 * 1024 * 1024;
 
@@ -35,17 +34,6 @@ const PREFIX = 'course/video/';
 const bad = (error: string, status = 400) =>
   Response.json({ error }, { status });
 
-const bucket = () => {
-  const store = bindings().STORAGE;
-  if (!store) throw new Response('Storage unavailable', { status: 500 });
-  return store;
-};
-
-/*
- * A key only ever comes back from the 'create' step, but it arrives from the
- * client on every later step, so re-check it rather than trusting the round
- * trip to write somewhere else in the bucket.
- */
 const safeKey = (key: string) =>
   key.startsWith(PREFIX) && !key.includes('..');
 
@@ -57,12 +45,9 @@ export const Route = createFileRoute('/api/upload')({
 
         const url = new URL(request.url);
         const action = url.searchParams.get('action') || '';
-        const store = bucket();
+        const env = bindings();
 
-        /*
-         * START — reserve a key and open the multipart upload.
-         */
-        if (action === 'create') {
+        if (action === 'presign') {
           const d: any = await request.json().catch(() => ({}));
           const contentType = String(d.contentType || '');
           const size = Number(d.size || 0);
@@ -75,85 +60,50 @@ export const Route = createFileRoute('/api/upload')({
             return bad('Video must be 500MB or smaller');
           }
 
+          if (!env.R2_ACCOUNT_ID || !env.R2_ACCESS_KEY_ID || !env.R2_SECRET_ACCESS_KEY) {
+            return bad('Direct upload is not configured', 500);
+          }
+
           const key = `${PREFIX}${crypto.randomUUID()}`;
 
-          const upload = await store.createMultipartUpload(key, {
-            httpMetadata: { contentType },
+          const client = new AwsClient({
+            accessKeyId: env.R2_ACCESS_KEY_ID,
+            secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+            service: 's3',
+            region: 'auto',
           });
 
-          return Response.json({
-            key,
-            uploadId: upload.uploadId,
-            partSize: PART_SIZE,
-          });
+          const objectUrl = new URL(`https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com/jtrader-storage/${key}`);
+          objectUrl.searchParams.set('X-Amz-Expires', '3600');
+
+          // signQuery produces a presigned URL (auth in the query string)
+          // rather than a signed Authorization header, which is what a
+          // browser PUT from plain fetch/XHR needs — it can't attach R2's
+          // SigV4 header itself.
+          const signed = await client.sign(
+            new Request(objectUrl, {
+              method: 'PUT',
+              headers: { 'Content-Type': contentType },
+            }),
+            { aws: { signQuery: true } }
+          );
+
+          return Response.json({ key, uploadUrl: signed.url });
         }
 
         /*
-         * PART — the raw chunk is the request body.
+         * The uploaded object has no metadata (owner, lesson) until the
+         * lesson is actually saved, so a video that never gets attached
+         * would sit in the bucket forever otherwise. Let the admin UI
+         * clean it up if the user cancels or the save fails.
          */
-        if (action === 'part') {
-          const key = url.searchParams.get('key') || '';
-          const uploadId = url.searchParams.get('uploadId') || '';
-          const partNumber = Number(url.searchParams.get('part') || 0);
-
-          if (!safeKey(key) || !uploadId || partNumber < 1) {
-            return bad('Invalid upload part');
-          }
-
-          const body = await request.arrayBuffer();
-          if (!body.byteLength) return bad('Empty upload part');
-
-          const part = await store
-            .resumeMultipartUpload(key, uploadId)
-            .uploadPart(partNumber, body);
-
-          return Response.json({
-            partNumber: part.partNumber,
-            etag: part.etag,
-          });
-        }
-
-        /*
-         * FINISH — stitch the parts into a single object.
-         */
-        if (action === 'complete') {
+        if (action === 'discard') {
           const d: any = await request.json().catch(() => ({}));
           const key = String(d.key || '');
-          const uploadId = String(d.uploadId || '');
-          const parts = Array.isArray(d.parts) ? d.parts : [];
 
-          if (!safeKey(key) || !uploadId || !parts.length) {
-            return bad('Invalid upload');
-          }
+          if (!safeKey(key)) return bad('Invalid key');
 
-          await store
-            .resumeMultipartUpload(key, uploadId)
-            .complete(
-              parts.map((p: any) => ({
-                partNumber: Number(p.partNumber),
-                etag: String(p.etag),
-              }))
-            );
-
-          return Response.json({ key });
-        }
-
-        /*
-         * ABORT — called when the browser gives up, so half-written parts
-         * are not left billing against the bucket.
-         */
-        if (action === 'abort') {
-          const d: any = await request.json().catch(() => ({}));
-          const key = String(d.key || '');
-          const uploadId = String(d.uploadId || '');
-
-          if (!safeKey(key) || !uploadId) return bad('Invalid upload');
-
-          await store
-            .resumeMultipartUpload(key, uploadId)
-            .abort()
-            .catch(() => {});
-
+          await bindings().STORAGE?.delete(key).catch(() => {});
           return Response.json({ ok: true });
         }
 

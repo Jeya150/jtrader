@@ -15,6 +15,9 @@ type AppEnv = {
   APP_SLUG?: string;
   RAZORPAY_KEY_ID?: string;
   RAZORPAY_KEY_SECRET?: string;
+  R2_ACCOUNT_ID?: string;
+  R2_ACCESS_KEY_ID?: string;
+  R2_SECRET_ACCESS_KEY?: string;
 };
 
 export function bindings(): AppEnv {
