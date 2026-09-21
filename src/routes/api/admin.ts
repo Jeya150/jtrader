@@ -523,11 +523,11 @@ export const Route = createFileRoute('/api/admin')({
               );
             }
 
-            if (f.size > 500 * 1024 * 1024) {
+            if (f.size > 5 * 1024 * 1024 * 1024) {
               return Response.json(
                 {
                   error:
-                    'Video must be 500MB or smaller',
+                    'Video must be 5GB or smaller',
                 },
                 { status: 400 }
               );

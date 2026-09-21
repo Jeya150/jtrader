@@ -27,7 +27,9 @@ const guard = async (r: Request) => {
  * cap never applies to it.
  */
 
-const MAX_BYTES = 500 * 1024 * 1024;
+// R2's S3-compatible API caps a single (non-multipart) PUT at 5GiB —
+// this is the real ceiling, not an arbitrary app-level choice.
+const MAX_BYTES = 5 * 1024 * 1024 * 1024;
 
 const PREFIX = 'course/video/';
 
@@ -57,7 +59,7 @@ export const Route = createFileRoute('/api/upload')({
           }
 
           if (!size || size > MAX_BYTES) {
-            return bad('Video must be 500MB or smaller');
+            return bad('Video must be 5GB or smaller');
           }
 
           if (!env.R2_ACCOUNT_ID || !env.R2_ACCESS_KEY_ID || !env.R2_SECRET_ACCESS_KEY) {
@@ -74,7 +76,9 @@ export const Route = createFileRoute('/api/upload')({
           });
 
           const objectUrl = new URL(`https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com/jtrader-storage/${key}`);
-          objectUrl.searchParams.set('X-Amz-Expires', '3600');
+          // A 5GB file on a slow connection can take hours; give the
+          // presigned URL enough headroom that it doesn't expire mid-upload.
+          objectUrl.searchParams.set('X-Amz-Expires', '43200');
 
           // signQuery produces a presigned URL (auth in the query string)
           // rather than a signed Authorization header, which is what a
