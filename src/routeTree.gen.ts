@@ -15,6 +15,7 @@ import { Route as CourseRouteImport } from './routes/course'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiVideoRouteImport } from './routes/api/video'
+import { Route as ApiUploadRouteImport } from './routes/api/upload'
 import { Route as ApiPaymentRouteImport } from './routes/api/payment'
 import { Route as ApiOfferRouteImport } from './routes/api/offer'
 import { Route as ApiMediaRouteImport } from './routes/api/media'
@@ -51,6 +52,11 @@ const IndexRoute = IndexRouteImport.update({
 const ApiVideoRoute = ApiVideoRouteImport.update({
   id: '/api/video',
   path: '/api/video',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiUploadRoute = ApiUploadRouteImport.update({
+  id: '/api/upload',
+  path: '/api/upload',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPaymentRoute = ApiPaymentRouteImport.update({
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/api/media': typeof ApiMediaRoute
   '/api/offer': typeof ApiOfferRoute
   '/api/payment': typeof ApiPaymentRoute
+  '/api/upload': typeof ApiUploadRoute
   '/api/video': typeof ApiVideoRoute
 }
 export interface FileRoutesByTo {
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/api/media': typeof ApiMediaRoute
   '/api/offer': typeof ApiOfferRoute
   '/api/payment': typeof ApiPaymentRoute
+  '/api/upload': typeof ApiUploadRoute
   '/api/video': typeof ApiVideoRoute
 }
 export interface FileRoutesById {
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/api/media': typeof ApiMediaRoute
   '/api/offer': typeof ApiOfferRoute
   '/api/payment': typeof ApiPaymentRoute
+  '/api/upload': typeof ApiUploadRoute
   '/api/video': typeof ApiVideoRoute
 }
 export interface FileRouteTypes {
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/api/media'
     | '/api/offer'
     | '/api/payment'
+    | '/api/upload'
     | '/api/video'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/api/media'
     | '/api/offer'
     | '/api/payment'
+    | '/api/upload'
     | '/api/video'
   id:
     | '__root__'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/api/media'
     | '/api/offer'
     | '/api/payment'
+    | '/api/upload'
     | '/api/video'
   fileRoutesById: FileRoutesById
 }
@@ -196,6 +208,7 @@ export interface RootRouteChildren {
   ApiMediaRoute: typeof ApiMediaRoute
   ApiOfferRoute: typeof ApiOfferRoute
   ApiPaymentRoute: typeof ApiPaymentRoute
+  ApiUploadRoute: typeof ApiUploadRoute
   ApiVideoRoute: typeof ApiVideoRoute
 }
 
@@ -241,6 +254,13 @@ declare module '@tanstack/react-router' {
       path: '/api/video'
       fullPath: '/api/video'
       preLoaderRoute: typeof ApiVideoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/upload': {
+      id: '/api/upload'
+      path: '/api/upload'
+      fullPath: '/api/upload'
+      preLoaderRoute: typeof ApiUploadRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/payment': {
@@ -308,6 +328,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiMediaRoute: ApiMediaRoute,
   ApiOfferRoute: ApiOfferRoute,
   ApiPaymentRoute: ApiPaymentRoute,
+  ApiUploadRoute: ApiUploadRoute,
   ApiVideoRoute: ApiVideoRoute,
 }
 export const routeTree = rootRouteImport

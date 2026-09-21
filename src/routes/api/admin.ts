@@ -142,6 +142,7 @@ export const Route = createFileRoute('/api/admin')({
             'price',
             'oldPrice',
             'access',
+            'videoKey',
           ]) {
             d[k] = String(fd.get(k) || '');
           }
@@ -482,10 +483,32 @@ export const Route = createFileRoute('/api/admin')({
 
           const f = fd?.get('video');
 
+          const uploaded = String(d.videoKey || '');
+
           /*
-           * Upload new video
+           * Video already in R2 via /api/upload.
+           *
+           * This is the path the admin dashboard takes: the browser streams
+           * the file straight into the bucket in parts, so all that arrives
+           * here is the finished key.
            */
-          if (f instanceof File && f.size) {
+          if (uploaded) {
+            if (!uploaded.startsWith('course/video/')) {
+              return Response.json(
+                { error: 'Invalid video reference' },
+                { status: 400 }
+              );
+            }
+
+            key = uploaded;
+
+            /*
+             * Delete old video when replacing it
+             */
+            if (old?.video_key && old.video_key !== key) {
+              await store?.delete(old.video_key);
+            }
+          } else if (f instanceof File && f.size) {
             if (!store) {
               return Response.json(
                 { error: 'Storage unavailable' },
