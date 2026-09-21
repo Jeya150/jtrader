@@ -10,49 +10,45 @@ const ALL_POSITIONS=[
   {top:'78%',left:'5%'},{top:'78%',left:'57%'},
 ];
 
-function WatermarkStamp({identity,offset}:{identity:Identity;offset:number}){
-  const [posIdx,setPosIdx]=useState(offset%ALL_POSITIONS.length);
+function WatermarkStamp({identity}:{identity:Identity}){
+  const [posIdx,setPosIdx]=useState(0);
   useEffect(()=>{
     const t=window.setInterval(()=>{
-      setPosIdx(i=>(i+2)%ALL_POSITIONS.length);
-    },4000+offset*700);
+      setPosIdx(i=>(i+1)%ALL_POSITIONS.length);
+    },3000);
     return ()=>window.clearInterval(t);
-  },[offset]);
+  },[]);
   const pos=ALL_POSITIONS[posIdx];
-  const ts=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
   return (
     <div style={{
       position:'absolute',
       top:pos.top,left:pos.left,
       pointerEvents:'none',userSelect:'none',
-      background:'rgba(0,0,0,0.35)',
+      background:'rgba(0,0,0,0.3)',
       backdropFilter:'blur(2px)',
-      border:'1px solid rgba(255,255,255,0.12)',
+      border:'1px solid rgba(255,255,255,0.1)',
       borderRadius:'4px',
-      padding:'4px 8px',
-      fontSize:'9px',
-      lineHeight:1.5,
-      color:'rgba(255,255,255,0.65)',
+      padding:'3px 6px',
+      fontSize:'7px',
+      lineHeight:1.4,
+      color:'rgba(255,255,255,0.55)',
       fontFamily:'monospace',
-      transition:'top 0.8s ease, left 0.8s ease',
+      transition:'top 1.2s ease, left 1.2s ease',
       zIndex:3,
-      maxWidth:'160px',
+      maxWidth:'120px',
       wordBreak:'break-all',
     }}>
-      <div style={{fontWeight:700,color:'rgba(255,255,255,0.8)'}}>{identity.name||'Student'}</div>
+      <div style={{fontWeight:700,color:'rgba(255,255,255,0.7)'}}>{identity.name||'Student'}</div>
       <div>{identity.email||''}</div>
-      {identity.contact_number&&<div>{identity.contact_number}</div>}
-      <div style={{color:'rgba(255,255,255,0.4)',fontSize:'8px'}}>{ts} · JTRADER</div>
     </div>
   );
 }
 
 export default function WatermarkedVideo({lessonId,title}:Props){
+  const containerRef=useRef<HTMLDivElement>(null);
   const videoRef=useRef<HTMLVideoElement>(null);
   const [identity,setIdentity]=useState<Identity|null>(null);
-  const [recordingWarning,setRecordingWarning]=useState(false);
-  const [accepted,setAccepted]=useState(false);
-  const warningTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
+  const [isFullscreen,setIsFullscreen]=useState(false);
 
   useEffect(()=>{
     let active=true;
@@ -60,126 +56,67 @@ export default function WatermarkedVideo({lessonId,title}:Props){
       if(active && d?.user?.role==='student') setIdentity(d.user);
     }).catch(()=>{});
 
-    // Disable PiP when video loads
     const vid=videoRef.current;
     if(vid){
       (vid as any).disablePictureInPicture=true;
       vid.addEventListener('enterpictureinpicture',e=>e.preventDefault());
     }
 
-    // Screen recording detection via Page Visibility API
-    function onVisibilityChange(){
-      if(document.hidden){
-        setRecordingWarning(true);
-        if(warningTimer.current) clearTimeout(warningTimer.current);
-        warningTimer.current=setTimeout(()=>setRecordingWarning(false),8000);
+    /*
+     * The browser's built-in fullscreen button fullscreens the <video>
+     * element itself. The watermark divs are siblings of <video>, not
+     * descendants, so they simply aren't part of that fullscreen element
+     * and vanish. If the video ever ends up fullscreened directly, swap it
+     * for fullscreening the wrapping container instead, which holds both
+     * the video and the watermark.
+     */
+    function onFullscreenChange(){
+      const el=document.fullscreenElement;
+      setIsFullscreen(!!el && el===containerRef.current);
+      if(el && el===videoRef.current){
+        document.exitFullscreen().then(()=>containerRef.current?.requestFullscreen()).catch(()=>{});
       }
     }
-    document.addEventListener('visibilitychange',onVisibilityChange);
-
-    // Detect screen capture via display-media (Chrome)
-    let captureCheck:ReturnType<typeof setInterval>|null=null;
-    if('mediaDevices' in navigator){
-      captureCheck=setInterval(async()=>{
-        try{
-          // @ts-ignore
-          const devices=await navigator.mediaDevices.enumerateDevices();
-          // If a new display capture appears, warn
-        }catch{}
-      },5000);
-    }
+    document.addEventListener('fullscreenchange',onFullscreenChange);
 
     return ()=>{
       active=false;
-      document.removeEventListener('visibilitychange',onVisibilityChange);
-      if(captureCheck) clearInterval(captureCheck);
-      if(warningTimer.current) clearTimeout(warningTimer.current);
+      document.removeEventListener('fullscreenchange',onFullscreenChange);
     };
   },[]);
 
-  if(!accepted){
-    return (
-      <div style={{background:'#07090d',borderRadius:'10px',padding:'28px',textAlign:'center',border:'1px solid rgba(255,255,255,0.08)'}}>
-        <div style={{fontSize:'28px',marginBottom:'12px'}}>🔒</div>
-        <h3 style={{margin:'0 0 8px',fontSize:'16px',color:'#f0f6ff'}}>Protected Content</h3>
-        <p style={{color:'#7a8799',fontSize:'12px',lineHeight:1.7,margin:'0 0 16px',maxWidth:'380px',marginLeft:'auto',marginRight:'auto'}}>
-          This lesson is protected by JTrader Academy. Recording, sharing or distributing this content is strictly prohibited and may result in immediate account suspension and legal action.<br/><br/>
-          Your name, email and phone number are embedded as a visible watermark in this video.
-        </p>
-        <button
-          onClick={()=>setAccepted(true)}
-          style={{background:'#fff',color:'#080a0d',padding:'12px 28px',borderRadius:'8px',fontWeight:900,fontSize:'12px',border:'none',cursor:'pointer'}}
-        >
-          I understand — Watch Lesson
-        </button>
-      </div>
-    );
+  function toggleFullscreen(){
+    if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+    else containerRef.current?.requestFullscreen().catch(()=>{});
   }
 
   return (
-    <div style={{position:'relative',width:'100%',background:'#000',borderRadius:'8px',overflow:'hidden',userSelect:'none'}}>
-
-      {/* Screen recording warning overlay */}
-      {recordingWarning&&(
-        <div style={{
-          position:'absolute',inset:0,zIndex:10,
-          background:'rgba(0,0,0,0.92)',
-          display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
-          color:'#fff',textAlign:'center',padding:'20px'
-        }}>
-          <div style={{fontSize:'36px',marginBottom:'12px'}}>⚠️</div>
-          <h3 style={{margin:'0 0 8px',fontSize:'18px',color:'#ff6b6b'}}>Recording Detected</h3>
-          <p style={{color:'#aaa',fontSize:'13px',maxWidth:'340px',lineHeight:1.7}}>
-            Screen recording or switching apps while watching is not allowed.<br/>
-            Your account activity is being monitored.<br/>
-            <b style={{color:'#fff'}}>{identity?.name||'Student'} ({identity?.email||''})</b>
-          </p>
-          <button onClick={()=>setRecordingWarning(false)} style={{marginTop:'16px',background:'#fff',color:'#080a0d',padding:'10px 20px',border:'none',borderRadius:'8px',fontWeight:900,fontSize:'11px',cursor:'pointer'}}>
-            Continue Watching
-          </button>
-        </div>
-      )}
-
-      {/* CSS disruption layer — disrupts screen capture software */}
-      <div style={{
-        position:'absolute',inset:0,zIndex:2,pointerEvents:'none',
-        background:'repeating-linear-gradient(0deg,transparent 0px,transparent 2px,rgba(255,255,255,0.008) 2px,rgba(255,255,255,0.008) 4px)',
-        mixBlendMode:'overlay',
-      }}/>
-
-      {/* Video */}
+    <div ref={containerRef} style={{position:'relative',width:'100%',background:'#000',borderRadius:'8px',overflow:'hidden',userSelect:'none'}}>
       <video
         ref={videoRef}
         controls
         preload="metadata"
-        controlsList="nodownload noremoteplayback"
+        controlsList="nodownload noremoteplayback nofullscreen"
         disablePictureInPicture
         src={`/api/video?lesson=${encodeURIComponent(lessonId)}`}
         aria-label={title}
         onContextMenu={e=>e.preventDefault()}
-        style={{width:'100%',display:'block'}}
+        style={isFullscreen?{width:'100%',height:'100%',display:'block',objectFit:'contain'}:{width:'100%',display:'block'}}
       />
 
-      {/* Multiple rotating watermarks */}
-      {identity&&[0,1,2,3].map(i=>(
-        <WatermarkStamp key={i} identity={identity} offset={i}/>
-      ))}
+      {identity&&<WatermarkStamp identity={identity}/>}
 
-      {/* Fixed corner stamp */}
-      {identity&&(
-        <div style={{
-          position:'absolute',bottom:'48px',right:'10px',zIndex:4,
-          pointerEvents:'none',userSelect:'none',
-          fontSize:'8px',color:'rgba(255,255,255,0.3)',
-          fontFamily:'monospace',textAlign:'right',lineHeight:1.5,
-        }}>
-          {identity.name} · JTRADER ACADEMY
-        </div>
-      )}
-
-      <small style={{display:'block',padding:'6px 10px',background:'#07090d',color:'#3d4d5c',fontSize:'9px',letterSpacing:'0.5px'}}>
-        🔒 Personalized watermark active — recording and sharing is prohibited. Violations result in account suspension.
-      </small>
+      <button
+        onClick={toggleFullscreen}
+        aria-label={isFullscreen?'Exit fullscreen':'Enter fullscreen'}
+        style={{
+          position:'absolute',bottom:'44px',right:'10px',zIndex:4,
+          background:'rgba(0,0,0,0.5)',border:'1px solid rgba(255,255,255,0.15)',
+          borderRadius:'6px',color:'#fff',fontSize:'13px',
+          width:'28px',height:'28px',display:'grid',placeItems:'center',
+          cursor:'pointer',
+        }}
+      >{isFullscreen?'⤡':'⛶'}</button>
     </div>
   );
 }
