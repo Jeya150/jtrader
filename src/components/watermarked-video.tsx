@@ -3,43 +3,51 @@ import {useEffect,useRef,useState} from 'react';
 type Props={lessonId:string;title:string};
 type Identity={name?:string;email?:string;contact_number?:string};
 
-const ALL_POSITIONS=[
-  {top:'8%',left:'6%'},{top:'8%',left:'55%'},
-  {top:'30%',left:'4%'},{top:'30%',left:'58%'},
-  {top:'55%',left:'6%'},{top:'55%',left:'52%'},
-  {top:'78%',left:'5%'},{top:'78%',left:'57%'},
-];
-
 function WatermarkStamp({identity}:{identity:Identity}){
-  const [posIdx,setPosIdx]=useState(0);
+  const [pos,setPos]=useState({top:50,left:50});
+  const startRef=useRef(performance.now());
+  // Random phase so every viewer's watermark drifts on a different path,
+  // not a shared, predictable loop.
+  const phaseRef=useRef({x:Math.random()*Math.PI*2,y:Math.random()*Math.PI*2});
+
   useEffect(()=>{
-    const t=window.setInterval(()=>{
-      setPosIdx(i=>(i+1)%ALL_POSITIONS.length);
-    },3000);
-    return ()=>window.clearInterval(t);
+    let frame:number;
+    const tick=(now:number)=>{
+      const t=(now-startRef.current)/1000;
+      // Two sine waves on different periods trace a continuously moving
+      // Lissajous-style path — always in motion, never resting at a fixed
+      // point, so it can't look like it "disappears and reappears".
+      const left=50+34*Math.sin(t/11+phaseRef.current.x);
+      const top=50+30*Math.cos(t/13+phaseRef.current.y);
+      setPos({top,left});
+      frame=requestAnimationFrame(tick);
+    };
+    frame=requestAnimationFrame(tick);
+    return ()=>cancelAnimationFrame(frame);
   },[]);
-  const pos=ALL_POSITIONS[posIdx];
+
   return (
     <div style={{
       position:'absolute',
-      top:pos.top,left:pos.left,
+      top:`${pos.top}%`,left:`${pos.left}%`,
       pointerEvents:'none',userSelect:'none',
-      background:'rgba(0,0,0,0.3)',
+      background:'rgba(0,0,0,0.32)',
       backdropFilter:'blur(2px)',
       border:'1px solid rgba(255,255,255,0.1)',
-      borderRadius:'4px',
-      padding:'3px 6px',
-      fontSize:'7px',
-      lineHeight:1.4,
-      color:'rgba(255,255,255,0.55)',
+      borderRadius:'5px',
+      padding:'5px 9px',
+      fontSize:'10px',
+      lineHeight:1.5,
+      color:'rgba(255,255,255,0.6)',
       fontFamily:'monospace',
-      transition:'top 1.2s ease, left 1.2s ease',
       zIndex:3,
-      maxWidth:'120px',
+      maxWidth:'190px',
       wordBreak:'break-all',
+      willChange:'top,left',
     }}>
-      <div style={{fontWeight:700,color:'rgba(255,255,255,0.7)'}}>{identity.name||'Student'}</div>
+      <div style={{fontWeight:700,color:'rgba(255,255,255,0.75)'}}>{identity.name||'Student'}</div>
       <div>{identity.email||''}</div>
+      {identity.contact_number&&<div>{identity.contact_number}</div>}
     </div>
   );
 }
