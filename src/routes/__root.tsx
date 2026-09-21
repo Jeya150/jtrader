@@ -167,6 +167,50 @@ function RootShell({ children }: { children: ReactNode }) {
           toggle, or a light mode. */}
       <head>
         <HeadContent />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "name": "JTrader Academy",
+              "url": "https://jtrader.in",
+              "logo": "https://jtrader.in/assets/jtrader-logo.png",
+              "description": "Best online stock market and options trading course in India",
+              "founder": {"@type": "Person", "name": "Jeya Akash"},
+              "sameAs": ["https://jtrader.in"]
+            },
+            {
+              "@type": "Course",
+              "name": "Option Trading Course",
+              "description": "Learn options trading strategies, risk management and practical trade execution for Indian markets. One simple strategy — simplified, practical and profitable.",
+              "provider": {"@type": "Organization", "name": "JTrader Academy", "url": "https://jtrader.in"},
+              "url": "https://jtrader.in",
+              "offers": {"@type": "Offer", "price": "9999", "priceCurrency": "INR", "availability": "https://schema.org/InStock"},
+              "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "Online", "inLanguage": "Tamil, English"},
+              "educationalLevel": "Beginner to Advanced",
+              "teaches": "Options Trading, Stock Market, Risk Management, Trade Execution"
+            },
+            {
+              "@type": "Course",
+              "name": "Basic of Share Market",
+              "description": "Understand how the share market works, key concepts and analysis basics for beginners.",
+              "provider": {"@type": "Organization", "name": "JTrader Academy", "url": "https://jtrader.in"},
+              "url": "https://jtrader.in",
+              "offers": {"@type": "Offer", "price": "1500", "priceCurrency": "INR", "availability": "https://schema.org/InStock"},
+              "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "Online", "inLanguage": "Tamil, English"},
+              "educationalLevel": "Beginner"
+            },
+            {
+              "@type": "WebSite",
+              "name": "JTrader Academy",
+              "url": "https://jtrader.in",
+              "potentialAction": {"@type": "SearchAction", "target": "https://jtrader.in?q={search_term_string}", "query-input": "required name=search_term_string"}
+            }
+          ]
+        })}}/>
+        <meta name="keywords" content="stock market course India, options trading course, share market course, trading course online, learn options trading, best trading course India, JTrader Academy, options trading Tamil Nadu, stock market training"/>
+        <meta name="robots" content="index, follow"/>
+        <link rel="canonical" href="https://jtrader.in"/>
       </head>
       <body className="bg-q-background-primary text-q-text-primary">
         {children}

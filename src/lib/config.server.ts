@@ -19,8 +19,9 @@ import process from "node:process";
 export function getServerConfig() {
   return {
     nodeEnv: process.env.NODE_ENV,
-    // Add server-only values here, e.g.:
-    //   databaseUrl: process.env.DATABASE_URL,
-    //   stripeSecretKey: process.env.STRIPE_SECRET_KEY,
   };
 }
+
+// The only email address that may hold admin privileges.
+// Even if another account has role='admin' in the DB, it is denied access.
+export const ADMIN_EMAIL = 'jeyaakash8@gmail.com';

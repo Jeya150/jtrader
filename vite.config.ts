@@ -18,13 +18,21 @@ import { fileURLToPath } from "node:url";
 const QUANTA_ICONS_SHIM = fileURLToPath(
   new URL("./src/lib/quanta-material-icons.ts", import.meta.url),
 );
+const LOCAL_CLOUDFLARE_ENV = fileURLToPath(
+  new URL("./src/lib/local-cloudflare-env.server.ts", import.meta.url),
+);
 
 export default defineConfig(({ mode }) => {
   const designInspectorEnabled = process.env.HF_DESIGN_INSPECTOR === "1" || mode === "design";
 
   return {
     resolve: {
-      alias: [{ find: /^@higgsfield-ai\/icons(\/.*)?$/, replacement: QUANTA_ICONS_SHIM }],
+      alias: [
+        { find: /^@higgsfield-ai\/icons(\/.*)?$/, replacement: QUANTA_ICONS_SHIM },
+        ...(mode === "development"
+          ? [{ find: "cloudflare:workers", replacement: LOCAL_CLOUDFLARE_ENV }]
+          : []),
+      ],
     },
     // The server bundle runs as a Cloudflare Worker — there is no node_modules
     // at runtime. Vite's default SSR build leaves npm deps as bare external
@@ -32,11 +40,14 @@ export default defineConfig(({ mode }) => {
     // server but throw "No such module" in a Worker. Bundle them all in.
     // (node: builtins stay external — nodejs_compat provides them.)
     ssr: {
-      noExternal: true,
+      // Vite's development SSR server runs in Node/Bun and can load React's
+      // CommonJS entry normally. The deployed Worker still needs dependencies
+      // bundled because it has no node_modules at runtime.
+      ...(mode !== "development" ? { noExternal: true } : {}),
       // `cloudflare:workers` is a workerd runtime built-in that exposes the Worker
       // env / bindings (D1 `DB`, R2 `STORAGE`). Like node: builtins it must NOT be
       // bundled; the runtime provides it. (`ssr.external` is typed string[].)
-      external: ["cloudflare:workers"],
+      external: mode === "development" ? [] : ["cloudflare:workers"],
     },
     build: {
       // Keep `cloudflare:*` external in the SSR rollup pass too — `noExternal`
@@ -44,6 +55,21 @@ export default defineConfig(({ mode }) => {
       rollupOptions: { external: [/^cloudflare:/] },
     },
     plugins: [
+      ...(mode === "development"
+        ? [
+            {
+              name: "local-cloudflare-workers-shim",
+              resolveId(source: string) {
+                return source === "cloudflare:workers" ? "\0cloudflare:workers" : undefined;
+              },
+              load(id: string) {
+                return id === "\0cloudflare:workers"
+                  ? `export { env } from ${JSON.stringify(LOCAL_CLOUDFLARE_ENV)};`
+                  : undefined;
+              },
+            },
+          ]
+        : []),
       // Material Symbols SVGs (the app icon set) import as React components via
       // `?react`. `icon: true` sizes them 1em; fill is forced to currentColor so
       // they color like text (the raw SVGs have no fill attribute). Keep the

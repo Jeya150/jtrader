@@ -41,6 +41,14 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      // Block oversized request bodies (max 20MB for video uploads, 100KB for API)
+      const contentLength = Number(request.headers.get('content-length') || 0);
+      const isUpload = request.url.includes('/api/admin') || request.url.includes('/api/data');
+      const maxSize = isUpload ? 20 * 1024 * 1024 : 100 * 1024;
+      if (contentLength > maxSize) {
+        return new Response('Payload too large', { status: 413 });
+      }
+
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return applySecurityHeaders(await normalizeCatastrophicSsrResponse(response));

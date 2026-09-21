@@ -15,18 +15,24 @@ export function applySecurityHeaders(response: Response): Response {
   headers.set(
     'Content-Security-Policy',
     "default-src 'self'; " +
-      "script-src 'self' 'unsafe-inline'; " +
+      "script-src 'self' 'unsafe-inline' https://checkout.razorpay.com; " +
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
       "font-src 'self' https://fonts.gstatic.com; " +
-      "img-src 'self' data: https:; media-src 'self' https:; " +
+      "img-src 'self' data: https:; media-src 'self' https: blob:; " +
       "connect-src 'self' https:; " +
-      "base-uri 'self'; form-action 'self'",
+      "frame-src https://api.razorpay.com https://checkout.razorpay.com; " +
+      "base-uri 'self'; form-action 'self'; " +
+      "object-src 'none'; " +
+      "upgrade-insecure-requests;",
   );
   headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   headers.set('X-Content-Type-Options', 'nosniff');
+  headers.set('X-Frame-Options', 'SAMEORIGIN');
   headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()');
   headers.set('X-XSS-Protection', '0');
+  headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  headers.set('Cross-Origin-Resource-Policy', 'same-origin');
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,

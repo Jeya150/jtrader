@@ -11,12 +11,20 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as IndexBeforeWelcomeRouteImport } from './routes/index-before-welcome'
+import { Route as IndexBeforeDashboardFinalRouteImport } from './routes/index-before-dashboard-final'
+import { Route as IndexBeforeDashboardRouteImport } from './routes/index-before-dashboard'
+import { Route as CourseRouteImport } from './routes/course'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiAuthRouteImport } from './routes/api/auth'
-import { Route as ApiDataRouteImport } from './routes/api/data'
-import { Route as ApiAdminRouteImport } from './routes/api/admin'
-import { Route as ApiMediaRouteImport } from './routes/api/media'
 import { Route as ApiVideoRouteImport } from './routes/api/video'
+import { Route as ApiPaymentRouteImport } from './routes/api/payment'
+import { Route as ApiOfferRouteImport } from './routes/api/offer'
+import { Route as ApiMediaRouteImport } from './routes/api/media'
+import { Route as ApiDataRouteImport } from './routes/api/data'
+import { Route as ApiCoursesRouteImport } from './routes/api/courses'
+import { Route as ApiAuthRouteImport } from './routes/api/auth'
+import { Route as ApiAdminRouteImport } from './routes/api/admin'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -28,60 +36,207 @@ const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiAuthRoute = ApiAuthRouteImport.update({ id: '/api/auth', path: '/api/auth', getParentRoute: () => rootRouteImport } as any)
-const ApiDataRoute = ApiDataRouteImport.update({ id: '/api/data', path: '/api/data', getParentRoute: () => rootRouteImport } as any)
-const ApiAdminRoute = ApiAdminRouteImport.update({ id: '/api/admin', path: '/api/admin', getParentRoute: () => rootRouteImport } as any)
-const ApiMediaRoute = ApiMediaRouteImport.update({ id: '/api/media', path: '/api/media', getParentRoute: () => rootRouteImport } as any)
-const ApiVideoRoute = ApiVideoRouteImport.update({ id: '/api/video', path: '/api/video', getParentRoute: () => rootRouteImport } as any)
+const IndexBeforeWelcomeRoute = IndexBeforeWelcomeRouteImport.update({
+  id: '/index-before-welcome',
+  path: '/index-before-welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexBeforeDashboardFinalRoute =
+  IndexBeforeDashboardFinalRouteImport.update({
+    id: '/index-before-dashboard-final',
+    path: '/index-before-dashboard-final',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const IndexBeforeDashboardRoute = IndexBeforeDashboardRouteImport.update({
+  id: '/index-before-dashboard',
+  path: '/index-before-dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CourseRoute = CourseRouteImport.update({
+  id: '/course',
+  path: '/course',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiVideoRoute = ApiVideoRouteImport.update({
+  id: '/api/video',
+  path: '/api/video',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPaymentRoute = ApiPaymentRouteImport.update({
+  id: '/api/payment',
+  path: '/api/payment',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOfferRoute = ApiOfferRouteImport.update({
+  id: '/api/offer',
+  path: '/api/offer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMediaRoute = ApiMediaRouteImport.update({
+  id: '/api/media',
+  path: '/api/media',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDataRoute = ApiDataRouteImport.update({
+  id: '/api/data',
+  path: '/api/data',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCoursesRoute = ApiCoursesRouteImport.update({
+  id: '/api/courses',
+  path: '/api/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthRoute = ApiAuthRouteImport.update({
+  id: '/api/auth',
+  path: '/api/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminRoute = ApiAdminRouteImport.update({
+  id: '/api/admin',
+  path: '/api/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/course': typeof CourseRoute
+  '/index-before-dashboard': typeof IndexBeforeDashboardRoute
+  '/index-before-dashboard-final': typeof IndexBeforeDashboardFinalRoute
+  '/index-before-welcome': typeof IndexBeforeWelcomeRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/api/auth': typeof ApiAuthRoute
-  '/api/data': typeof ApiDataRoute
   '/api/admin': typeof ApiAdminRoute
+  '/api/auth': typeof ApiAuthRoute
+  '/api/courses': typeof ApiCoursesRoute
+  '/api/data': typeof ApiDataRoute
   '/api/media': typeof ApiMediaRoute
+  '/api/offer': typeof ApiOfferRoute
+  '/api/payment': typeof ApiPaymentRoute
   '/api/video': typeof ApiVideoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/course': typeof CourseRoute
+  '/index-before-dashboard': typeof IndexBeforeDashboardRoute
+  '/index-before-dashboard-final': typeof IndexBeforeDashboardFinalRoute
+  '/index-before-welcome': typeof IndexBeforeWelcomeRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/api/auth': typeof ApiAuthRoute
-  '/api/data': typeof ApiDataRoute
   '/api/admin': typeof ApiAdminRoute
+  '/api/auth': typeof ApiAuthRoute
+  '/api/courses': typeof ApiCoursesRoute
+  '/api/data': typeof ApiDataRoute
   '/api/media': typeof ApiMediaRoute
+  '/api/offer': typeof ApiOfferRoute
+  '/api/payment': typeof ApiPaymentRoute
   '/api/video': typeof ApiVideoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/course': typeof CourseRoute
+  '/index-before-dashboard': typeof IndexBeforeDashboardRoute
+  '/index-before-dashboard-final': typeof IndexBeforeDashboardFinalRoute
+  '/index-before-welcome': typeof IndexBeforeWelcomeRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/api/auth': typeof ApiAuthRoute
-  '/api/data': typeof ApiDataRoute
   '/api/admin': typeof ApiAdminRoute
+  '/api/auth': typeof ApiAuthRoute
+  '/api/courses': typeof ApiCoursesRoute
+  '/api/data': typeof ApiDataRoute
   '/api/media': typeof ApiMediaRoute
+  '/api/offer': typeof ApiOfferRoute
+  '/api/payment': typeof ApiPaymentRoute
   '/api/video': typeof ApiVideoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/robots.txt' | '/sitemap.xml' | '/api/auth' | '/api/data' | '/api/admin' | '/api/media' | '/api/video'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/course'
+    | '/index-before-dashboard'
+    | '/index-before-dashboard-final'
+    | '/index-before-welcome'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/api/admin'
+    | '/api/auth'
+    | '/api/courses'
+    | '/api/data'
+    | '/api/media'
+    | '/api/offer'
+    | '/api/payment'
+    | '/api/video'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/robots.txt' | '/sitemap.xml' | '/api/auth' | '/api/data' | '/api/admin' | '/api/media' | '/api/video'
-  id: '__root__' | '/' | '/robots.txt' | '/sitemap.xml' | '/api/auth' | '/api/data' | '/api/admin' | '/api/media' | '/api/video'
+  to:
+    | '/'
+    | '/admin'
+    | '/course'
+    | '/index-before-dashboard'
+    | '/index-before-dashboard-final'
+    | '/index-before-welcome'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/api/admin'
+    | '/api/auth'
+    | '/api/courses'
+    | '/api/data'
+    | '/api/media'
+    | '/api/offer'
+    | '/api/payment'
+    | '/api/video'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/course'
+    | '/index-before-dashboard'
+    | '/index-before-dashboard-final'
+    | '/index-before-welcome'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/api/admin'
+    | '/api/auth'
+    | '/api/courses'
+    | '/api/data'
+    | '/api/media'
+    | '/api/offer'
+    | '/api/payment'
+    | '/api/video'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  CourseRoute: typeof CourseRoute
+  IndexBeforeDashboardRoute: typeof IndexBeforeDashboardRoute
+  IndexBeforeDashboardFinalRoute: typeof IndexBeforeDashboardFinalRoute
+  IndexBeforeWelcomeRoute: typeof IndexBeforeWelcomeRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiAdminRoute: typeof ApiAdminRoute
+  ApiAuthRoute: typeof ApiAuthRoute
+  ApiCoursesRoute: typeof ApiCoursesRoute
+  ApiDataRoute: typeof ApiDataRoute
+  ApiMediaRoute: typeof ApiMediaRoute
+  ApiOfferRoute: typeof ApiOfferRoute
+  ApiPaymentRoute: typeof ApiPaymentRoute
+  ApiVideoRoute: typeof ApiVideoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -100,11 +255,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/data': { id: '/api/data', path: '/api/data', fullPath: '/api/data', preLoaderRoute: typeof ApiDataRouteImport, parentRoute: typeof rootRouteImport }
-    '/api/admin': { id: '/api/admin', path: '/api/admin', fullPath: '/api/admin', preLoaderRoute: typeof ApiAdminRouteImport, parentRoute: typeof rootRouteImport }
-    '/api/media': { id: '/api/media', path: '/api/media', fullPath: '/api/media', preLoaderRoute: typeof ApiMediaRouteImport, parentRoute: typeof rootRouteImport }
-    '/api/video': { id: '/api/video', path: '/api/video', fullPath: '/api/video', preLoaderRoute: typeof ApiVideoRouteImport, parentRoute: typeof rootRouteImport }
-    '/api/auth': { id: '/api/auth', path: '/api/auth', fullPath: '/api/auth', preLoaderRoute: typeof ApiAuthRouteImport, parentRoute: typeof rootRouteImport }
+    '/index-before-welcome': {
+      id: '/index-before-welcome'
+      path: '/index-before-welcome'
+      fullPath: '/index-before-welcome'
+      preLoaderRoute: typeof IndexBeforeWelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/index-before-dashboard-final': {
+      id: '/index-before-dashboard-final'
+      path: '/index-before-dashboard-final'
+      fullPath: '/index-before-dashboard-final'
+      preLoaderRoute: typeof IndexBeforeDashboardFinalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/index-before-dashboard': {
+      id: '/index-before-dashboard'
+      path: '/index-before-dashboard'
+      fullPath: '/index-before-dashboard'
+      preLoaderRoute: typeof IndexBeforeDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/course': {
+      id: '/course'
+      path: '/course'
+      fullPath: '/course'
+      preLoaderRoute: typeof CourseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -112,18 +297,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/video': {
+      id: '/api/video'
+      path: '/api/video'
+      fullPath: '/api/video'
+      preLoaderRoute: typeof ApiVideoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payment': {
+      id: '/api/payment'
+      path: '/api/payment'
+      fullPath: '/api/payment'
+      preLoaderRoute: typeof ApiPaymentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/offer': {
+      id: '/api/offer'
+      path: '/api/offer'
+      fullPath: '/api/offer'
+      preLoaderRoute: typeof ApiOfferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/media': {
+      id: '/api/media'
+      path: '/api/media'
+      fullPath: '/api/media'
+      preLoaderRoute: typeof ApiMediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/data': {
+      id: '/api/data'
+      path: '/api/data'
+      fullPath: '/api/data'
+      preLoaderRoute: typeof ApiDataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/courses': {
+      id: '/api/courses'
+      path: '/api/courses'
+      fullPath: '/api/courses'
+      preLoaderRoute: typeof ApiCoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth': {
+      id: '/api/auth'
+      path: '/api/auth'
+      fullPath: '/api/auth'
+      preLoaderRoute: typeof ApiAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin': {
+      id: '/api/admin'
+      path: '/api/admin'
+      fullPath: '/api/admin'
+      preLoaderRoute: typeof ApiAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ApiAuthRoute: ApiAuthRoute,
-  ApiDataRoute: ApiDataRoute,
-  ApiAdminRoute: ApiAdminRoute,
-  ApiMediaRoute: ApiMediaRoute,
-  ApiVideoRoute: ApiVideoRoute,
+  AdminRoute: AdminRoute,
+  CourseRoute: CourseRoute,
+  IndexBeforeDashboardRoute: IndexBeforeDashboardRoute,
+  IndexBeforeDashboardFinalRoute: IndexBeforeDashboardFinalRoute,
+  IndexBeforeWelcomeRoute: IndexBeforeWelcomeRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiAdminRoute: ApiAdminRoute,
+  ApiAuthRoute: ApiAuthRoute,
+  ApiCoursesRoute: ApiCoursesRoute,
+  ApiDataRoute: ApiDataRoute,
+  ApiMediaRoute: ApiMediaRoute,
+  ApiOfferRoute: ApiOfferRoute,
+  ApiPaymentRoute: ApiPaymentRoute,
+  ApiVideoRoute: ApiVideoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

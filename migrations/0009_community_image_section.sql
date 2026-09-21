@@ -1,0 +1,2 @@
+ALTER TABLE posts ADD COLUMN image_key TEXT;
+ALTER TABLE posts ADD COLUMN section TEXT NOT NULL DEFAULT 'student';
