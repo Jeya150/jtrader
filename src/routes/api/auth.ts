@@ -257,7 +257,7 @@ export const Route=createFileRoute('/api/auth')({
           const u2=await db().prepare('SELECT id,name,email FROM users WHERE email=?').bind(email).first<any>();
           // Always return ok (don't reveal if email exists)
           if(u2){
-            const otp=String(Math.floor(100000+Math.random()*900000));
+            const otp=String(100000+crypto.getRandomValues(new Uint32Array(1))[0]%900000);
             const expires=new Date(Date.now()+10*60000).toISOString().replace('T',' ').replace('Z','');
             // Invalidate old OTPs for this email
             await db().prepare('UPDATE otp_requests SET used=1 WHERE email=?').bind(email).run();

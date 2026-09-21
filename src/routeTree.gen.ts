@@ -11,9 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
-import { Route as IndexBeforeWelcomeRouteImport } from './routes/index-before-welcome'
-import { Route as IndexBeforeDashboardFinalRouteImport } from './routes/index-before-dashboard-final'
-import { Route as IndexBeforeDashboardRouteImport } from './routes/index-before-dashboard'
 import { Route as CourseRouteImport } from './routes/course'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -34,22 +31,6 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   id: '/robots.txt',
   path: '/robots.txt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexBeforeWelcomeRoute = IndexBeforeWelcomeRouteImport.update({
-  id: '/index-before-welcome',
-  path: '/index-before-welcome',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexBeforeDashboardFinalRoute =
-  IndexBeforeDashboardFinalRouteImport.update({
-    id: '/index-before-dashboard-final',
-    path: '/index-before-dashboard-final',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const IndexBeforeDashboardRoute = IndexBeforeDashboardRouteImport.update({
-  id: '/index-before-dashboard',
-  path: '/index-before-dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CourseRoute = CourseRouteImport.update({
@@ -112,9 +93,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/course': typeof CourseRoute
-  '/index-before-dashboard': typeof IndexBeforeDashboardRoute
-  '/index-before-dashboard-final': typeof IndexBeforeDashboardFinalRoute
-  '/index-before-welcome': typeof IndexBeforeWelcomeRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/admin': typeof ApiAdminRoute
@@ -130,9 +108,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/course': typeof CourseRoute
-  '/index-before-dashboard': typeof IndexBeforeDashboardRoute
-  '/index-before-dashboard-final': typeof IndexBeforeDashboardFinalRoute
-  '/index-before-welcome': typeof IndexBeforeWelcomeRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/admin': typeof ApiAdminRoute
@@ -149,9 +124,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/course': typeof CourseRoute
-  '/index-before-dashboard': typeof IndexBeforeDashboardRoute
-  '/index-before-dashboard-final': typeof IndexBeforeDashboardFinalRoute
-  '/index-before-welcome': typeof IndexBeforeWelcomeRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/admin': typeof ApiAdminRoute
@@ -169,9 +141,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/course'
-    | '/index-before-dashboard'
-    | '/index-before-dashboard-final'
-    | '/index-before-welcome'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/api/admin'
@@ -187,9 +156,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/course'
-    | '/index-before-dashboard'
-    | '/index-before-dashboard-final'
-    | '/index-before-welcome'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/api/admin'
@@ -205,9 +171,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/course'
-    | '/index-before-dashboard'
-    | '/index-before-dashboard-final'
-    | '/index-before-welcome'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/api/admin'
@@ -224,9 +187,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   CourseRoute: typeof CourseRoute
-  IndexBeforeDashboardRoute: typeof IndexBeforeDashboardRoute
-  IndexBeforeDashboardFinalRoute: typeof IndexBeforeDashboardFinalRoute
-  IndexBeforeWelcomeRoute: typeof IndexBeforeWelcomeRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiAdminRoute: typeof ApiAdminRoute
@@ -253,27 +213,6 @@ declare module '@tanstack/react-router' {
       path: '/robots.txt'
       fullPath: '/robots.txt'
       preLoaderRoute: typeof RobotsDottxtRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/index-before-welcome': {
-      id: '/index-before-welcome'
-      path: '/index-before-welcome'
-      fullPath: '/index-before-welcome'
-      preLoaderRoute: typeof IndexBeforeWelcomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/index-before-dashboard-final': {
-      id: '/index-before-dashboard-final'
-      path: '/index-before-dashboard-final'
-      fullPath: '/index-before-dashboard-final'
-      preLoaderRoute: typeof IndexBeforeDashboardFinalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/index-before-dashboard': {
-      id: '/index-before-dashboard'
-      path: '/index-before-dashboard'
-      fullPath: '/index-before-dashboard'
-      preLoaderRoute: typeof IndexBeforeDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/course': {
@@ -360,9 +299,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   CourseRoute: CourseRoute,
-  IndexBeforeDashboardRoute: IndexBeforeDashboardRoute,
-  IndexBeforeDashboardFinalRoute: IndexBeforeDashboardFinalRoute,
-  IndexBeforeWelcomeRoute: IndexBeforeWelcomeRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiAdminRoute: ApiAdminRoute,
