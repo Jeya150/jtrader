@@ -1346,7 +1346,7 @@ function Home(){
 
         <div style={{background:"rgba(10,18,42,.75)",backdropFilter:"blur(20px)",border:"1px solid rgba(212,175,55,.22)",borderRadius:"20px",padding:"32px",boxShadow:"0 8px 40px rgba(0,0,0,.45)"}}>
           <small style={{color:"#d4af37",fontSize:"9px",letterSpacing:"2.5px",fontWeight:900}}>ABOUT THE COURSE</small>
-          <h3 style={{fontSize:"22px",margin:"12px 0 22px",lineHeight:1.25,color:"#f0f4fc",letterSpacing:"-0.5px"}}>One strategy. One indicator.<br/>Real profits — simply.</h3>
+          <h3 style={{fontSize:"22px",margin:"12px 0 22px",lineHeight:1.25,color:"#f0f4fc",letterSpacing:"-0.5px"}}>One strategy. One indicator.</h3>
           {([
             ["📈","Simple & powerful","One proven strategy with a single indicator. Pure clarity — no noise, no overload."],
             ["🎯","Clean entries & exits","No guesswork. You know exactly when to enter and exit every single trade."],
