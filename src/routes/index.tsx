@@ -1566,7 +1566,13 @@ input:focus,textarea:focus,select:focus{border-color:rgba(37,99,235,.5)!importan
 .videoModalInner{background:#f0f9ff!important;border:1px solid #bae6fd!important;box-shadow:0 24px 80px rgba(0,0,0,.15)!important}
 
 /* ── Footer ── */
-footer{background:rgba(224,242,254,.95)!important;backdrop-filter:blur(12px)!important;border-top:1px solid #bae6fd!important}
+footer{background:rgba(224,242,254,.95)!important;backdrop-filter:blur(12px)!important;border-top:1px solid #bae6fd!important;color:#0c4a6e!important}
+footer b{color:#0c4a6e!important;font-size:19px}
+footer small,footer span{color:#0369a1!important;opacity:1!important}
+
+/* ── Classy price amount ── */
+.courseBottom>b{background:linear-gradient(135deg,#1e3a8a,#2563eb,#0ea5e9)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important;font-size:34px!important;letter-spacing:-1px!important;text-shadow:none!important}
+.optionCourse .courseBottom>b{background:linear-gradient(135deg,#92400e,#d97706,#fbbf24)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}
 
 /* ── 3-D text on all headings ── */
 h1,h2,h3{text-shadow:1px 1px 0 rgba(0,0,0,.15),2px 2px 0 rgba(0,0,0,.09),3px 3px 0 rgba(0,0,0,.05),4px 4px 7px rgba(0,0,0,.10)!important}
