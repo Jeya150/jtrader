@@ -1,30 +1,35 @@
-import {useEffect,useRef,useState} from 'react';
+import {useEffect,useRef,useState} from 'react'; // useRef kept for containerRef/videoRef
 
 type Props={lessonId:string;title:string};
 type Identity={name?:string;email?:string;contact_number?:string};
 
+function randPos(){
+  // Keep centre away from edges and the bottom native-controls bar.
+  return {top:12+Math.random()*58, left:12+Math.random()*68};
+}
+
 function WatermarkStamp({identity}:{identity:Identity}){
-  const [pos,setPos]=useState({top:50,left:50});
-  const startRef=useRef(performance.now());
-  // Random phase so every viewer's watermark drifts on a different path,
-  // not a shared, predictable loop.
-  const phaseRef=useRef({x:Math.random()*Math.PI*2,y:Math.random()*Math.PI*2});
+  const [pos,setPos]=useState(randPos);
+  const [visible,setVisible]=useState(true);
 
   useEffect(()=>{
-    let frame:number;
-    const tick=(now:number)=>{
-      const t=(now-startRef.current)/1000;
-      // Two sine waves on different periods trace a continuously moving
-      // Lissajous-style path — always in motion, never resting at a fixed
-      // point, so it can't look like it "disappears and reappears".
-      const left=50+32*Math.sin(t/11+phaseRef.current.x);
-      // Keep center well above the native controls bar (≈bottom 30% on mobile).
-      const top=42+22*Math.cos(t/13+phaseRef.current.y);
-      setPos({top,left});
-      frame=requestAnimationFrame(tick);
-    };
-    frame=requestAnimationFrame(tick);
-    return ()=>cancelAnimationFrame(frame);
+    // Visible for SHOW ms, hidden for HIDE ms, then jump to a new spot.
+    const SHOW=4500;
+    const HIDE=3500;
+    let t:ReturnType<typeof setTimeout>;
+
+    function cycle(){
+      t=setTimeout(()=>{
+        setVisible(false);
+        t=setTimeout(()=>{
+          setPos(randPos());
+          setVisible(true);
+          cycle();
+        },HIDE);
+      },SHOW);
+    }
+    cycle();
+    return ()=>clearTimeout(t);
   },[]);
 
   return (
@@ -33,21 +38,22 @@ function WatermarkStamp({identity}:{identity:Identity}){
       top:`${pos.top}%`,left:`${pos.left}%`,
       transform:'translate(-50%,-50%)',
       pointerEvents:'none',userSelect:'none',
-      background:'rgba(0,0,0,0.32)',
+      background:'rgba(0,0,0,0.35)',
       backdropFilter:'blur(2px)',
-      border:'1px solid rgba(255,255,255,0.1)',
+      border:'1px solid rgba(255,255,255,0.12)',
       borderRadius:'5px',
-      padding:'5px 9px',
+      padding:'5px 10px',
       fontSize:'11px',
       lineHeight:1.5,
-      color:'rgba(255,255,255,0.65)',
+      color:'rgba(255,255,255,0.7)',
       fontFamily:'monospace',
       zIndex:3,
       maxWidth:'min(190px,70%)',
       wordBreak:'break-all',
-      willChange:'top,left',
+      opacity:visible?1:0,
+      transition:'opacity 0.6s ease',
     }}>
-      <div style={{fontWeight:700,color:'rgba(255,255,255,0.75)'}}>{identity.name||'Student'}</div>
+      <div style={{fontWeight:700,color:'rgba(255,255,255,0.85)'}}>{identity.name||'Student'}</div>
       <div>{identity.email||''}</div>
       {identity.contact_number&&<div>{identity.contact_number}</div>}
     </div>

@@ -8,7 +8,10 @@ type Student = {id?: string; name: string; email: string; city?: string; created
 const api = (path: string, options?: RequestInit) => fetch(path, options).then(async response => {
   const contentType = response.headers.get('content-type') || '';
   const data = contentType.includes('application/json') ? await response.json().catch(() => ({})) : {};
-  if (!response.ok) throw Error(data.error || `Request failed (${response.status})`);
+  if (!response.ok) {
+    if (response.status === 403) throw Error('Session expired — log out and log back in at jtrader.in, then return here.');
+    throw Error(data.error || `Request failed (${response.status})`);
+  }
   return data;
 });
 

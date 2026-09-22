@@ -8,7 +8,7 @@ function format(ms:number){
   return [Math.floor(total/3600),Math.floor((total%3600)/60),total%60].map(v=>String(v).padStart(2,'0')).join(':');
 }
 
-export default function OfferCycleBanner({basicPrice,optionPrice}:{basicPrice?:number;optionPrice?:number}){
+export default function OfferCycleBanner({basicPrice,optionPrice,basicOldPrice,optionOldPrice}:{basicPrice?:number;optionPrice?:number;basicOldPrice?:number;optionOldPrice?:number}){
   const [now,setNow]=useState(Date.now());
   const [settings,setSettings]=useState<Settings>(DEFAULT);
 
@@ -38,11 +38,11 @@ export default function OfferCycleBanner({basicPrice,optionPrice}:{basicPrice?:n
       <div className="offerCyclePrices">
         {basicPrice!==undefined&&<div>
           <b>Basic of Share Market</b>
-          <strong>₹{bp.toLocaleString('en-IN')} <s>₹{settings.basicOldPrice.toLocaleString('en-IN')}</s></strong>
+          <strong>₹{bp.toLocaleString('en-IN')} <s>₹{(basicOldPrice??settings.basicOldPrice).toLocaleString('en-IN')}</s></strong>
         </div>}
         {optionPrice!==undefined&&<div>
           <b>Option Trading Course</b>
-          <strong>₹{op.toLocaleString('en-IN')} <s>₹{settings.optionOldPrice.toLocaleString('en-IN')}</s></strong>
+          <strong>₹{op.toLocaleString('en-IN')} <s>₹{(optionOldPrice??settings.optionOldPrice).toLocaleString('en-IN')}</s></strong>
         </div>}
         <span>Offer ends in <em>{format(remainingMs)}</em></span>
       </div>

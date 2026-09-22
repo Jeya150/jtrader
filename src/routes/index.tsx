@@ -43,6 +43,7 @@ function Home(){
   const [fpError,setFpError]=useState('');
   const [selectedLesson,setSelectedLesson]=useState<any>(null);
   const [viewCourse,setViewCourse]=useState<'basic-share-market'|'option-trading'>('option-trading');
+  const [dashCourseTab,setDashCourseTab]=useState<'basic-share-market'|'option-trading'>('basic-share-market');
 
   useEffect(()=>{
     api("/api/auth").then(x=>{
@@ -229,9 +230,12 @@ function Home(){
       'option-trading':{title:'Option Trading Course',subtitle:'Complete structured learning path.',tag:'MOST POPULAR',features:['Options strategies','Practical examples','Risk management','Lifetime access']}
     };
     const d=defaults[id];
-    const price=Number(row?.price??( id==='basic-share-market'?1500:9999));
+    const price=Number(row?.price??(id==='basic-share-market'?1500:9999));
+    const oldPrice=row?.old_price?Number(row.old_price):undefined;
     const status=row?.status||'active';
-    return {id,title:row?.title||d.title,subtitle:row?.description||d.subtitle,tag:d.tag,features:d.features,price,priceStr:`Rs.${price.toLocaleString('en-IN')}`,status};
+    // If the API loaded but this course is absent, the admin set it to hidden.
+    const hidden=courseList.length>0&&!row;
+    return {id,title:row?.title||d.title,subtitle:row?.description||d.subtitle,tag:d.tag,features:d.features,price,oldPrice,priceStr:`Rs.${price.toLocaleString('en-IN')}`,status,hidden};
   }
   const COURSES={
     'basic-share-market':getCourse('basic-share-market'),
@@ -446,63 +450,75 @@ function Home(){
 
           </section>
 
-          <section className="lessonList" style={{marginBottom:"14px"}}>
-            <header>
-              <div>
-                <small>BASIC OF SHARE MARKET</small>
-                <h2>Basic Course</h2>
-              </div>
-              <span style={{display:"flex",alignItems:"center",gap:"10px"}}>
-                <span>{basicLessons.length} Videos</span>
-                {!basicPurchased&&<button className="primary" style={{fontSize:"10px",padding:"8px 14px"}} onClick={()=>{setViewCourse('basic-share-market');setTab("course");}}>Buy – {COURSES['basic-share-market'].priceStr}</button>}
-              </span>
-            </header>
-            {!basicPurchased?(
-              <div className="locked"><h3>Not purchased</h3><p>Buy the Basic of Share Market course to unlock lessons.</p></div>
-            ):basicLessons.length===0?(
-              <div className="locked"><h3>No videos yet</h3><p>Videos will appear here once uploaded by the admin.</p></div>
-            ):(
-              basicLessons.map((lesson:any,index:number)=>{const done=completedBasic.has(lesson.id);return(
-                <div className="lesson" key={lesson.id||index}>
-                  <button onClick={()=>toggleComplete(lesson.id,'basic-share-market',true)} style={{width:"32px",height:"32px",borderRadius:"50%",border:`2px solid ${done?"#55e0d0":"#27313d"}`,background:done?"#55e0d0":"transparent",color:done?"#020408":"#55e0d0",fontSize:"14px",flexShrink:0,transition:"all .2s",cursor:"pointer"}}>{done?"✓":""}</button>
-                  <div style={{flex:1,cursor:"pointer"}} onClick={()=>setSelectedLesson(lesson)}>
-                    <h3 style={{textDecoration:done?"line-through":"none",opacity:done?.6:1}}>{lesson.title||"Untitled Lesson"}</h3>
-                    <p>{lesson.description||"Course lesson"}</p>
-                  </div>
-                  <small>▶ {getDuration(lesson)}</small>
+          {(()=>{
+            const basicVisible=basicPurchased||!COURSES['basic-share-market'].hidden;
+            const optionVisible=optionPurchased||!COURSES['option-trading'].hidden;
+            const activeTab=(dashCourseTab==='option-trading'&&optionVisible)?'option-trading':basicVisible?'basic-share-market':'option-trading';
+            return(<>
+              {basicVisible&&optionVisible&&(
+                <div style={{display:"flex",gap:"8px",marginBottom:"16px"}}>
+                  {basicVisible&&<button onClick={()=>setDashCourseTab('basic-share-market')} style={{padding:"9px 18px",borderRadius:"9px",border:activeTab==='basic-share-market'?"none":"1px solid rgba(255,255,255,0.1)",background:activeTab==='basic-share-market'?"#fff":"rgba(255,255,255,0.04)",color:activeTab==='basic-share-market'?"#080a0d":"#9aa6b4",fontWeight:900,fontSize:"11px",cursor:"pointer"}}>Basic Course</button>}
+                  {optionVisible&&<button onClick={()=>setDashCourseTab('option-trading')} style={{padding:"9px 18px",borderRadius:"9px",border:activeTab==='option-trading'?"none":"1px solid rgba(255,255,255,0.1)",background:activeTab==='option-trading'?"#fff":"rgba(255,255,255,0.04)",color:activeTab==='option-trading'?"#080a0d":"#9aa6b4",fontWeight:900,fontSize:"11px",cursor:"pointer"}}>Option Trading</button>}
                 </div>
-              );})
-            )}
-          </section>
+              )}
 
-          <section className="lessonList">
-            <header>
-              <div>
-                <small>OPTION TRADING COURSE</small>
-                <h2>Option Trading</h2>
-              </div>
-              <span style={{display:"flex",alignItems:"center",gap:"10px"}}>
-                <span>{lessons.length} Videos</span>
-                {!optionPurchased&&<button className="primary" style={{fontSize:"10px",padding:"8px 14px"}} onClick={()=>{setViewCourse('option-trading');setTab("course");}}>Buy – {COURSES['option-trading'].priceStr}</button>}
-              </span>
-            </header>
-            {!optionPurchased?(
-              <div className="locked"><h3>Not purchased</h3><p>Buy the Option Trading Course to unlock lessons.</p></div>
-            ):lessons.length===0?(
-              <div className="locked"><h3>No videos yet</h3><p>Videos will appear here once uploaded by the admin.</p></div>
-            ):(
-              lessons.map((lesson:any,index:number)=>{const done=completedOption.has(lesson.id);return(
-                <div className="lesson" key={lesson.id||index}>
-                  <button onClick={()=>toggleComplete(lesson.id,'option-trading',false)} style={{width:"32px",height:"32px",borderRadius:"50%",border:`2px solid ${done?"#55e0d0":"#27313d"}`,background:done?"#55e0d0":"transparent",color:done?"#020408":"#55e0d0",fontSize:"14px",flexShrink:0,transition:"all .2s",cursor:"pointer"}}>{done?"✓":""}</button>
-                  <div style={{flex:1,cursor:"pointer"}} onClick={()=>setSelectedLesson(lesson)}>
-                    <h3 style={{textDecoration:done?"line-through":"none",opacity:done?.6:1}}>{lesson.title||"Untitled Lesson"}</h3>
-                    <p>{lesson.description||"Course lesson"}</p>
-                  </div>
-                  <small>▶ {getDuration(lesson)}</small>
-                </div>
-              );})
-            )}
-          </section>
+              {activeTab==='basic-share-market'&&basicVisible&&(
+                <section className="lessonList" style={{marginBottom:"14px"}}>
+                  <header>
+                    <div><small>BASIC OF SHARE MARKET</small><h2>Basic Course</h2></div>
+                    <span style={{display:"flex",alignItems:"center",gap:"10px"}}>
+                      <span>{basicLessons.length} Videos</span>
+                      {!basicPurchased&&<button className="primary" style={{fontSize:"10px",padding:"8px 14px"}} onClick={()=>{setViewCourse('basic-share-market');setTab("course");}}>Buy – {COURSES['basic-share-market'].priceStr}</button>}
+                    </span>
+                  </header>
+                  {!basicPurchased?(
+                    <div className="locked"><h3>Not purchased</h3><p>Buy the Basic of Share Market course to unlock lessons.</p></div>
+                  ):basicLessons.length===0?(
+                    <div className="locked"><h3>No videos yet</h3><p>Videos will appear here once uploaded by the admin.</p></div>
+                  ):(
+                    basicLessons.map((lesson:any,index:number)=>{const done=completedBasic.has(lesson.id);return(
+                      <div className="lesson" key={lesson.id||index}>
+                        <button onClick={()=>toggleComplete(lesson.id,'basic-share-market',true)} style={{width:"32px",height:"32px",borderRadius:"50%",border:`2px solid ${done?"#55e0d0":"#27313d"}`,background:done?"#55e0d0":"transparent",color:done?"#020408":"#55e0d0",fontSize:"14px",flexShrink:0,transition:"all .2s",cursor:"pointer"}}>{done?"✓":""}</button>
+                        <div style={{flex:1,cursor:"pointer"}} onClick={()=>setSelectedLesson(lesson)}>
+                          <h3 style={{textDecoration:done?"line-through":"none",opacity:done?.6:1}}>{lesson.title||"Untitled Lesson"}</h3>
+                          <p>{lesson.description||"Course lesson"}</p>
+                        </div>
+                        <small>▶ {getDuration(lesson)}</small>
+                      </div>
+                    );})
+                  )}
+                </section>
+              )}
+
+              {activeTab==='option-trading'&&optionVisible&&(
+                <section className="lessonList">
+                  <header>
+                    <div><small>OPTION TRADING COURSE</small><h2>Option Trading</h2></div>
+                    <span style={{display:"flex",alignItems:"center",gap:"10px"}}>
+                      {optionPurchased&&<span>{lessons.length} Videos</span>}
+                      {!optionPurchased&&<button className="primary" style={{fontSize:"10px",padding:"8px 14px"}} onClick={()=>{setViewCourse('option-trading');setTab("course");}}>Buy – {COURSES['option-trading'].priceStr}</button>}
+                    </span>
+                  </header>
+                  {!optionPurchased?(
+                    <div className="locked"><h3>Not purchased</h3><p>Buy the Option Trading Course to unlock lessons.</p></div>
+                  ):lessons.length===0?(
+                    <div className="locked"><h3>No videos yet</h3><p>Videos will appear here once uploaded by the admin.</p></div>
+                  ):(
+                    lessons.map((lesson:any,index:number)=>{const done=completedOption.has(lesson.id);return(
+                      <div className="lesson" key={lesson.id||index}>
+                        <button onClick={()=>toggleComplete(lesson.id,'option-trading',false)} style={{width:"32px",height:"32px",borderRadius:"50%",border:`2px solid ${done?"#55e0d0":"#27313d"}`,background:done?"#55e0d0":"transparent",color:done?"#020408":"#55e0d0",fontSize:"14px",flexShrink:0,transition:"all .2s",cursor:"pointer"}}>{done?"✓":""}</button>
+                        <div style={{flex:1,cursor:"pointer"}} onClick={()=>setSelectedLesson(lesson)}>
+                          <h3 style={{textDecoration:done?"line-through":"none",opacity:done?.6:1}}>{lesson.title||"Untitled Lesson"}</h3>
+                          <p>{lesson.description||"Course lesson"}</p>
+                        </div>
+                        <small>▶ {getDuration(lesson)}</small>
+                      </div>
+                    );})
+                  )}
+                </section>
+              )}
+            </>);
+          })()}
 
           <section className="cta">
 
@@ -598,6 +614,10 @@ function Home(){
           <OfferCycleBanner
           basicPrice={COURSES['basic-share-market'].status==='coming_soon'?undefined:COURSES['basic-share-market'].price}
           optionPrice={COURSES['option-trading'].status==='coming_soon'?undefined:COURSES['option-trading'].price}
+          basicOldPrice={COURSES['basic-share-market'].oldPrice}
+          optionOldPrice={COURSES['option-trading'].oldPrice}
+basicOldPrice={COURSES['basic-share-market'].oldPrice}
+          optionOldPrice={COURSES['option-trading'].oldPrice}
         />
 
           <div className="courseCardsNew">
