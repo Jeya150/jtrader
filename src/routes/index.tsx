@@ -1605,8 +1605,8 @@ input:focus,textarea:focus{background:rgba(255,255,255,.10)!important;border-col
 .lesson p,.head p,.enroll p,.enroll li,.feature p,.step p,.card p,.courseBody p,.courseQuote,.courseMeta,.videoPending,.upload span,.stats>div>span,.stats>div>small,.cta p,.cta small,.hero p,.pageHero p{color:#8ca0b8!important}
 .cta em,.hero h1 em,.pageHero em{color:#7bb3ff!important;-webkit-text-fill-color:#7bb3ff!important}
 .lesson small{color:#5f7a9a!important}
-.signup input,.adminLogininput,.tableHead input,.community textarea,.manageCard input,.manageCard textarea,.settingsCard input,.settingsCard textarea{background:#090d13!important;border:1px solid rgba(255,255,255,.1)!important;color:#f0f4fc!important}
-.signup input::placeholder,.community textarea::placeholder,.adminLogininput::placeholder,.manageCard input::placeholder{color:#445566!important}
+.signup input,.adminLogininput,.tableHead input,.community textarea,.manageCard input,.manageCard textarea,.settingsCard input,.settingsCard textarea{background:rgba(255,255,255,.1)!important;border:2px solid rgba(255,255,255,.4)!important;color:#f0f4fc!important;border-radius:8px!important}
+.signup input::placeholder,.community textarea::placeholder,.adminLogininput::placeholder,.manageCard input::placeholder{color:#9db0c8!important;opacity:1!important}
 .row{color:#8ca0b8!important}
 .upload b{color:#c8d8e8!important}
 .locked{color:#5f7a9a!important}
