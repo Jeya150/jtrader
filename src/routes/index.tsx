@@ -43,6 +43,19 @@ function Home(){
   const [fpError,setFpError]=useState('');
   const [selectedLesson,setSelectedLesson]=useState<any>(null);
   const [viewCourse,setViewCourse]=useState<'basic-share-market'|'option-trading'>('option-trading');
+  const [curriculum,setCurriculum]=useState<{[id:string]:{id:string;title:string;module:string;position:number}[]}>({});
+  const [expandedCourse,setExpandedCourse]=useState<string|null>(null);
+
+  async function toggleCurriculum(courseId:string){
+    if(expandedCourse===courseId){setExpandedCourse(null);return;}
+    setExpandedCourse(courseId);
+    if(!curriculum[courseId]){
+      try{
+        const d=await api(`/api/courses?curriculum=${encodeURIComponent(courseId)}`);
+        if(Array.isArray(d.lessons)) setCurriculum(prev=>({...prev,[courseId]:d.lessons}));
+      }catch(e){}
+    }
+  }
   const [dashCourseTab,setDashCourseTab]=useState<'basic-share-market'|'option-trading'>('basic-share-market');
 
   useEffect(()=>{
@@ -623,46 +636,82 @@ function Home(){
 
           <div className="courseCardsNew">
 
-            {courseList.some(c=>c.id==='basic-share-market') && (()=>{const c=COURSES['basic-share-market'];return(
-            <article className="courseNew basicCourse">
+            {courseList.some(c=>c.id==='basic-share-market') && (()=>{const c=COURSES['basic-share-market'];const expanded=expandedCourse==='basic-share-market';return(
+            <div style={{gridColumn:'1/-1'}}>
+            <article className="courseNew basicCourse" style={{gridColumn:'unset'}}>
               <div className="courseVisual" style={c.thumbnailKey?{backgroundImage:`url(/api/media?key=${encodeURIComponent(c.thumbnailKey)})`,backgroundSize:'cover',backgroundPosition:'center'}:{}}>
                 <span>{c.status==='coming_soon'?'COMING SOON':'BEGINNER FRIENDLY'}</span>
                 {!c.thumbnailKey&&<div className="miniChart greenChart">↗</div>}
               </div>
               <div className="courseBody">
-                <h3>BASIC OF<br/>SHARE MARKET</h3>
+                <h3>BASIC OF SHARE MARKET</h3>
                 <p>Understand how the share market works, key concepts, how to read stock prices and analysis basics.</p>
                 <div className="courseBottom">
                   {c.status==='coming_soon'
                     ? <b style={{color:'#f5c842',fontSize:"16px"}}>Coming Soon</b>
                     : basicPurchased
                       ? <button onClick={()=>{setDashCourseTab('basic-share-market');setTab("dashboard");}}>Start Learning →</button>
-                      : <><b>{c.priceStr}</b><button onClick={()=>{setViewCourse('basic-share-market');setTab("course");}}>View Course →</button></>
+                      : <><b>{c.priceStr}</b><button onClick={()=>{setViewCourse('basic-share-market');setTab("course");}}>Enroll →</button></>
                   }
+                  {c.status!=='coming_soon'&&<button onClick={()=>toggleCurriculum('basic-share-market')} style={{marginLeft:"8px",fontSize:"10px",color:"#8ca0b8",background:"none",border:"1px solid rgba(255,255,255,.12)",borderRadius:"6px",padding:"8px 12px"}}>{expanded?'▲ Hide topics':'▼ View topics'}</button>}
                 </div>
               </div>
             </article>
+            {expanded&&<div style={{background:"rgba(10,18,42,.75)",border:"1px solid rgba(59,130,246,.2)",borderTop:"none",borderRadius:"0 0 16px 16px",padding:"8px 0"}}>
+              {(curriculum['basic-share-market']||[]).length===0
+                ? <p style={{color:"#5f7a9a",fontSize:"12px",textAlign:"center",padding:"20px"}}>Loading topics…</p>
+                : (curriculum['basic-share-market']||[]).map((l,i)=>(
+                  <div key={l.id} style={{display:"flex",gap:"14px",alignItems:"center",padding:"12px 22px",borderBottom:"1px solid rgba(255,255,255,.05)"}}>
+                    <span style={{color:"#3b82f6",fontSize:"11px",fontWeight:700,minWidth:"24px"}}>{String(i+1).padStart(2,'0')}</span>
+                    <div>
+                      <b style={{fontSize:"13px",color:"#f0f4fc",display:"block"}}>{l.title}</b>
+                      {l.module&&<small style={{color:"#5f7a9a",fontSize:"10px"}}>{l.module}</small>}
+                    </div>
+                    <span style={{marginLeft:"auto",color:"#3b82f6",fontSize:"10px"}}>▶ Video</span>
+                  </div>
+                ))
+              }
+            </div>}
+            </div>
             );})()}
 
-            {courseList.some(c=>c.id==='option-trading') && (()=>{const c=COURSES['option-trading'];return(
-            <article className="courseNew optionCourse">
+            {courseList.some(c=>c.id==='option-trading') && (()=>{const c=COURSES['option-trading'];const expanded=expandedCourse==='option-trading';return(
+            <div style={{gridColumn:'1/-1'}}>
+            <article className="courseNew optionCourse" style={{gridColumn:'unset'}}>
               <div className="courseVisual" style={c.thumbnailKey?{backgroundImage:`url(/api/media?key=${encodeURIComponent(c.thumbnailKey)})`,backgroundSize:'cover',backgroundPosition:'center'}:{}}>
                 <span>{c.status==='coming_soon'?'COMING SOON':'MOST POPULAR'}</span>
                 {!c.thumbnailKey&&<div className="miniChart redChart">⚡</div>}
               </div>
               <div className="courseBody">
-                <h3>OPTION<br/>TRADING COURSE</h3>
+                <h3>OPTION TRADING COURSE</h3>
                 <p>Learn options, strategies, risk management and practical trade execution with real market examples.</p>
                 <div className="courseBottom">
                   {c.status==='coming_soon'
                     ? <b style={{color:'#f5c842',fontSize:"16px"}}>Coming Soon</b>
                     : optionPurchased
                       ? <button onClick={()=>{setDashCourseTab('option-trading');setTab("dashboard");}}>Start Learning →</button>
-                      : <><b>{c.priceStr}</b><button onClick={()=>{setViewCourse('option-trading');setTab("course");}}>View Course →</button></>
+                      : <><b>{c.priceStr}</b><button onClick={()=>{setViewCourse('option-trading');setTab("course");}}>Enroll →</button></>
                   }
+                  {c.status!=='coming_soon'&&<button onClick={()=>toggleCurriculum('option-trading')} style={{marginLeft:"8px",fontSize:"10px",color:"#8ca0b8",background:"none",border:"1px solid rgba(255,255,255,.12)",borderRadius:"6px",padding:"8px 12px"}}>{expanded?'▲ Hide topics':'▼ View topics'}</button>}
                 </div>
               </div>
             </article>
+            {expanded&&<div style={{background:"rgba(10,18,42,.75)",border:"1px solid rgba(245,158,11,.2)",borderTop:"none",borderRadius:"0 0 16px 16px",padding:"8px 0"}}>
+              {(curriculum['option-trading']||[]).length===0
+                ? <p style={{color:"#5f7a9a",fontSize:"12px",textAlign:"center",padding:"20px"}}>Loading topics…</p>
+                : (curriculum['option-trading']||[]).map((l,i)=>(
+                  <div key={l.id} style={{display:"flex",gap:"14px",alignItems:"center",padding:"12px 22px",borderBottom:"1px solid rgba(255,255,255,.05)"}}>
+                    <span style={{color:"#d97706",fontSize:"11px",fontWeight:700,minWidth:"24px"}}>{String(i+1).padStart(2,'0')}</span>
+                    <div>
+                      <b style={{fontSize:"13px",color:"#f0f4fc",display:"block"}}>{l.title}</b>
+                      {l.module&&<small style={{color:"#5f7a9a",fontSize:"10px"}}>{l.module}</small>}
+                    </div>
+                    <span style={{marginLeft:"auto",color:"#d97706",fontSize:"10px"}}>▶ Video</span>
+                  </div>
+                ))
+              }
+            </div>}
+            </div>
             );})()}
 
           </div>
