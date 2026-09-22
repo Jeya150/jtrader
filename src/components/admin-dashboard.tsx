@@ -124,7 +124,7 @@ export default function Admin({in: initiallyEntered, close}: Props) {
   const [newPayments, setNewPayments] = useState<any[]>([]);
   const [broadcastMsg, setBroadcastMsg] = useState('');
   const [activeBroadcast, setActiveBroadcast] = useState<any>(null);
-  const [offerSettings, setOfferSettings] = useState({enabled:true,cycleHours:9,basicOldPrice:2000,optionOldPrice:13000,bannerTitle:'Build your market edge.'});
+  const [offerSettings, setOfferSettings] = useState({enabled:true,cycleHours:9,basicOldPrice:2000,optionOldPrice:13000,bannerTitle:'Build your market edge.',socialProofEnabled:true,socialProofCourse:'basic-share-market'});
   const courseLessons = lessons.filter(lesson => lesson.course_id === selectedCourse);
   const selected = courses.find(course => course.id === selectedCourse);
   const paid = rows.filter(row => row.status === 'Paid').length;
@@ -158,7 +158,9 @@ export default function Admin({in: initiallyEntered, close}: Props) {
       cycleHours: data.cycleHours,
       basicOldPrice: data.basicOldPrice,
       optionOldPrice: data.optionOldPrice,
-      bannerTitle: data.bannerTitle
+      bannerTitle: data.bannerTitle,
+      socialProofEnabled: data.socialProofEnabled !== false,
+      socialProofCourse: data.socialProofCourse || 'basic-share-market',
     });
   }
   async function saveOffer() {
@@ -579,6 +581,20 @@ function OfferSettings({offerSettings, setOfferSettings, saveOffer, loading}: {o
             <input type="number" min="0" value={offerSettings.optionOldPrice} onChange={e=>set('optionOldPrice',Number(e.target.value))}/>
             <small style={{color:'#6c829a',fontSize:'9px',marginTop:'4px',display:'block'}}>Shown as the crossed-out original price for Option (₹9,999).</small>
           </label>
+        </div>
+        <div style={{borderTop:'1px solid #1a2635',marginTop:'28px',paddingTop:'24px'}}>
+          <span className="eyebrow" style={{display:'block',marginBottom:'14px'}}>SOCIAL PROOF POPUP</span>
+          <label style={{display:'block',color:'#8194a9',fontSize:'9px',marginBottom:'6px'}}>SHOW POPUP TO VISITORS</label>
+          <select value={offerSettings.socialProofEnabled?'1':'0'} onChange={e=>set('socialProofEnabled',e.target.value==='1')} style={{display:'block',width:'100%',background:'#09111b',border:'1px solid #24384d',borderRadius:'7px',color:'#edf5ff',padding:'11px',font:'inherit',fontSize:'11px',marginBottom:'12px'}}>
+            <option value="1">Enabled</option>
+            <option value="0">Disabled</option>
+          </select>
+          <label style={{display:'block',color:'#8194a9',fontSize:'9px',marginBottom:'6px'}}>COURSE TO SHOW IN POPUP</label>
+          <select value={offerSettings.socialProofCourse} onChange={e=>set('socialProofCourse',e.target.value)} style={{display:'block',width:'100%',background:'#09111b',border:'1px solid #24384d',borderRadius:'7px',color:'#edf5ff',padding:'11px',font:'inherit',fontSize:'11px'}}>
+            <option value="basic-share-market">Basic of Share Market only</option>
+            <option value="option-trading">Option Trading Course only</option>
+            <option value="both">Both courses</option>
+          </select>
         </div>
         <button className="adminPrimary" style={{marginTop:'22px'}} onClick={saveOffer} disabled={loading}>{loading?'Saving...':'Save offer settings →'}</button>
       </section>
