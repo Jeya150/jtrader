@@ -1323,19 +1323,19 @@ function Home(){
         <div>
           <small style={{color:"#5f8fff",fontSize:"9px",letterSpacing:"2.5px",fontWeight:900}}>ABOUT THE FOUNDER</small>
           <h2 style={{fontSize:"clamp(28px,4vw,42px)",letterSpacing:"-1.5px",margin:"12px 0 20px",lineHeight:1.1}}>Jeya Akash</h2>
-          <p style={{color:"#919cab",lineHeight:1.8,fontSize:"15px",marginBottom:"16px"}}>
+          <p style={{color:"#1e3a5f",lineHeight:1.8,fontSize:"15px",marginBottom:"16px"}}>
             Three years. Every popular strategy. Countless hours watching charts.
           </p>
-          <p style={{color:"#919cab",lineHeight:1.8,fontSize:"15px",marginBottom:"16px"}}>
+          <p style={{color:"#1e3a5f",lineHeight:1.8,fontSize:"15px",marginBottom:"16px"}}>
             That was my journey — until I stopped overcomplicating everything and committed to one simple approach. No confusion, no juggling ten indicators, no second-guessing. Just one strategy, understood deeply and applied consistently.
           </p>
-          <p style={{color:"#919cab",lineHeight:1.8,fontSize:"15px",marginBottom:"24px"}}>
+          <p style={{color:"#1e3a5f",lineHeight:1.8,fontSize:"15px",marginBottom:"24px"}}>
             The day I stopped switching was the day I started winning. JTrader Academy is built on that one method — simple enough to learn in days, powerful enough to trade for a lifetime.
           </p>
-          <div style={{borderLeft:"3px solid #4d8fff",paddingLeft:"18px"}}>
-            <p style={{margin:0,fontSize:"16px",fontWeight:700,color:"#e8edf3",lineHeight:1.7}}>
+          <div style={{borderLeft:"3px solid #2563eb",paddingLeft:"18px"}}>
+            <p style={{margin:0,fontSize:"17px",fontWeight:800,color:"#0c4a6e",lineHeight:1.7}}>
               Learn and earn.<br/>
-              <span style={{color:"#7aa8d0",fontWeight:400,fontSize:"14px"}}>Don't work for money — let the money work for you.</span>
+              <span style={{color:"#0369a1",fontWeight:500,fontSize:"15px"}}>Don't work for money — let the money work for you.</span>
             </p>
           </div>
         </div>
