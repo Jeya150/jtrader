@@ -434,14 +434,14 @@ function Home(){
               <small>BASIC COURSE</small>
               <b>Basic of Share Market</b>
               <span style={{color:basicPurchased?"#55e0d0":"#f0b45d"}}>{basicPurchased?`${completedBasic.size}/${basicLessons.length} done`:"Not purchased"}</span>
-              {basicPurchased&&me?.courses?.basic&&<small style={{color:"#94a3b8",fontSize:"9px",display:"block",marginTop:"3px"}}>Valid till {new Date(me.courses.basic).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</small>}
+              {basicPurchased&&me?.courses?.basic&&<small style={{color:"#94a3b8",fontSize:"9px",display:"block",marginTop:"3px"}}>Valid till {new Date(String(me.courses.basic).replace(' ','T')).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</small>}
             </div>
 
             {(optionPurchased||!COURSES['option-trading'].hidden)&&<div>
               <small>OPTION COURSE</small>
               <b>Option Trading Course</b>
               <span style={{color:optionPurchased?"#55e0d0":"#f0b45d"}}>{optionPurchased?`${completedOption.size}/${lessons.length} done`:"Not purchased"}</span>
-              {optionPurchased&&me?.courses?.option&&<small style={{color:"#94a3b8",fontSize:"9px",display:"block",marginTop:"3px"}}>Valid till {new Date(me.courses.option).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</small>}
+              {optionPurchased&&me?.courses?.option&&<small style={{color:"#94a3b8",fontSize:"9px",display:"block",marginTop:"3px"}}>Valid till {new Date(String(me.courses.option).replace(' ','T')).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</small>}
             </div>}
 
             <div>
@@ -1561,6 +1561,22 @@ footer{background:rgba(3,5,10,.85)!important;backdrop-filter:blur(20px)!importan
 
 /* ── Logo white on dark ── */
 .brand img,.logo img,.mobileBrand img,.adminLoginBrand img{filter:brightness(0) invert(1)!important}
+
+/* ── ALL TEXT VISIBLE ON DARK BACKGROUND ── */
+.lesson h3,.lessonList header h2,.enroll h2,.head h2,.dashboard h2,.stats b,.welcomeDashboard h1,.pageHero h1,.manageCard h2,.price,.courseBody h3,.sectionHeadNew h2,.joinBand h2,.featureStrip b,.courseQuote b,.row b,.accessBar b,.tableHead h2{color:#f0f4fc!important}
+.lesson p,.head p,.enroll p,.enroll li,.feature p,.step p,.card p,.courseBody p,.courseQuote,.courseMeta,.videoPending,.upload span,.stats>div>span,.stats>div>small{color:#8ca0b8!important}
+.lesson small{color:#5f7a9a!important}
+.signup input,.adminLogininput,.tableHead input,.community textarea,.manageCard input,.manageCard textarea,.settingsCard input,.settingsCard textarea{background:#090d13!important;border:1px solid rgba(255,255,255,.1)!important;color:#f0f4fc!important}
+.signup input::placeholder,.community textarea::placeholder,.adminLogininput::placeholder,.manageCard input::placeholder{color:#445566!important}
+.row{color:#8ca0b8!important}
+.upload b{color:#c8d8e8!important}
+.locked{color:#5f7a9a!important}
+.price s{color:#445566!important}
+.head small,.pageHero small,.enroll>small,.signup small,.dashboard small{color:#5f8fff!important}
+.lessonList header h2{color:#f0f4fc!important}
+.adminNav button{color:#8ca0b8!important;background:rgba(255,255,255,.05)!important}
+.adminNav .active{background:#fff!important;color:#080a0d!important}
+.lesson>strong{color:#5f8fff!important}
 
 /* ── Price gradient ── */
 .courseBottom>b{background:linear-gradient(135deg,#60a5fa,#4d8fff,#818cf8)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important;font-size:34px!important;letter-spacing:-1px!important;text-shadow:none!important}
