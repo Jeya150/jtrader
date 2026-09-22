@@ -1562,9 +1562,15 @@ footer{background:rgba(3,5,10,.85)!important;backdrop-filter:blur(20px)!importan
 /* ── Logo white on dark ── */
 .brand img,.logo img,.mobileBrand img,.adminLoginBrand img{filter:brightness(0) invert(1)!important}
 
+/* ── ALL INPUTS READABLE ── */
+input,textarea,select{background:#090d13!important;border:1px solid rgba(255,255,255,.12)!important;color:#f0f4fc!important}
+input::placeholder,textarea::placeholder{color:#5f7a9a!important;opacity:1!important}
+input:focus,textarea:focus{border-color:rgba(77,143,255,.5)!important;color:#fff!important}
+
 /* ── ALL TEXT VISIBLE ON DARK BACKGROUND ── */
-.lesson h3,.lessonList header h2,.enroll h2,.head h2,.dashboard h2,.stats b,.welcomeDashboard h1,.pageHero h1,.manageCard h2,.price,.courseBody h3,.sectionHeadNew h2,.joinBand h2,.featureStrip b,.courseQuote b,.row b,.accessBar b,.tableHead h2{color:#f0f4fc!important}
-.lesson p,.head p,.enroll p,.enroll li,.feature p,.step p,.card p,.courseBody p,.courseQuote,.courseMeta,.videoPending,.upload span,.stats>div>span,.stats>div>small{color:#8ca0b8!important}
+.lesson h3,.lessonList header h2,.enroll h2,.head h2,.dashboard h2,.stats b,.welcomeDashboard h1,.pageHero h1,.manageCard h2,.price,.courseBody h3,.sectionHeadNew h2,.joinBand h2,.featureStrip b,.courseQuote b,.row b,.accessBar b,.tableHead h2,.cta h2,.cta h3,.lessonList header h2,.pageHero h2{color:#f0f4fc!important}
+.lesson p,.head p,.enroll p,.enroll li,.feature p,.step p,.card p,.courseBody p,.courseQuote,.courseMeta,.videoPending,.upload span,.stats>div>span,.stats>div>small,.cta p,.cta small,.hero p,.pageHero p{color:#8ca0b8!important}
+.cta em,.hero h1 em,.pageHero em{color:#7bb3ff!important;-webkit-text-fill-color:#7bb3ff!important}
 .lesson small{color:#5f7a9a!important}
 .signup input,.adminLogininput,.tableHead input,.community textarea,.manageCard input,.manageCard textarea,.settingsCard input,.settingsCard textarea{background:#090d13!important;border:1px solid rgba(255,255,255,.1)!important;color:#f0f4fc!important}
 .signup input::placeholder,.community textarea::placeholder,.adminLogininput::placeholder,.manageCard input::placeholder{color:#445566!important}
