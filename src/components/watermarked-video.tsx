@@ -17,8 +17,9 @@ function WatermarkStamp({identity}:{identity:Identity}){
       // Two sine waves on different periods trace a continuously moving
       // Lissajous-style path — always in motion, never resting at a fixed
       // point, so it can't look like it "disappears and reappears".
-      const left=50+34*Math.sin(t/11+phaseRef.current.x);
-      const top=50+30*Math.cos(t/13+phaseRef.current.y);
+      const left=50+32*Math.sin(t/11+phaseRef.current.x);
+      // Keep center well above the native controls bar (≈bottom 30% on mobile).
+      const top=42+22*Math.cos(t/13+phaseRef.current.y);
       setPos({top,left});
       frame=requestAnimationFrame(tick);
     };
@@ -30,18 +31,19 @@ function WatermarkStamp({identity}:{identity:Identity}){
     <div style={{
       position:'absolute',
       top:`${pos.top}%`,left:`${pos.left}%`,
+      transform:'translate(-50%,-50%)',
       pointerEvents:'none',userSelect:'none',
       background:'rgba(0,0,0,0.32)',
       backdropFilter:'blur(2px)',
       border:'1px solid rgba(255,255,255,0.1)',
       borderRadius:'5px',
       padding:'5px 9px',
-      fontSize:'10px',
+      fontSize:'11px',
       lineHeight:1.5,
-      color:'rgba(255,255,255,0.6)',
+      color:'rgba(255,255,255,0.65)',
       fontFamily:'monospace',
       zIndex:3,
-      maxWidth:'190px',
+      maxWidth:'min(190px,70%)',
       wordBreak:'break-all',
       willChange:'top,left',
     }}>

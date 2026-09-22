@@ -75,6 +75,7 @@ const navItems = [
   ['community', '◉', 'Community'],
   ['offer', '◷', 'Offer Timing'],
   ['settings', '⚙', 'Settings'],
+  ['account', '◎', 'Account'],
 ] as const;
 
 export default function Admin({in: initiallyEntered, close}: Props) {
@@ -291,7 +292,7 @@ export default function Admin({in: initiallyEntered, close}: Props) {
             </div>}
           </div><span className="loginFoot">JTrader Academy · Built around discipline</span></div></div>;
 
-  return <div className="adminPage"><style>{adminStyles}</style><aside className="adminSidebar"><button className="sidebarBrand" onClick={() => setTab('overview')}><img src="/assets/jtrader-logo.png" alt="JTrader Academy"/><span>JTRADER<small>ACADEMY</small></span></button><div className="sidebarLabel">WORKSPACE</div><nav>{navItems.map(([key, icon, label]) => <button key={key} className={tab === key ? 'active' : ''} onClick={() => setTab(key)}><i>{icon}</i>{label}{key === 'course' && lessons.length > 0 && <b>{lessons.length}</b>}</button>)}</nav><div className="sidebarBottom"><div className="sidebarTip"><span>◒</span><div><b>Keep learning moving</b><small>Manage every lesson in one place.</small></div></div><button className="sidebarLogout" onClick={() => setEntered(false)}>↪ <span>Logout</span></button></div></aside><main className="adminMain"><header className="adminHeader"><div className="mobileBrand"><img src="/assets/jtrader-logo.png" alt="JTrader"/><b>JTRADER</b></div><div className="headerTitle"><span className="headerCrumb">JTRADER ACADEMY <b>/</b></span><h1>Admin Dashboard</h1></div><div className="headerProfile"><div className="profileAvatar">JA</div><div><b>JTrader Admin</b><small>Administrator</small></div><button onClick={() => setEntered(false)}>⌄</button></div></header>{newPayments.length > 0 && <div className="adminAlert success" style={{flexDirection:'column',alignItems:'flex-start',gap:'6px'}}><div style={{display:'flex',justifyContent:'space-between',width:'100%'}}><b>🔔 {newPayments.length} new payment{newPayments.length>1?'s':''} since your last visit!</b><button onClick={()=>setNewPayments([])}>×</button></div>{newPayments.map((s:any,i:number)=><div key={i} style={{fontSize:'9px',opacity:.85}}>💰 {s.name||s.email} — ₹{Number(s.amount||0).toLocaleString('en-IN')}</div>)}</div>}{error && <div className="adminAlert error">{error}<button onClick={() => setError('')}>×</button></div>}{notice && <div className="adminAlert success">{notice}<button onClick={() => setNotice('')}>×</button></div>}{tab === 'overview' && <Overview courses={courses} lessons={lessons} rows={rows} paid={paid} revenue={revenue} openCourse={openCourse}/>} {tab === 'courses' && <Courses courses={courses} lessons={lessons} openCourse={openCourse} saveCourse={saveCourse} setCourseStatus={setCourseStatus} loading={loading}/>} {tab === 'course' && <CourseManager courses={courses} selectedCourse={selectedCourse} setSelectedCourse={(id: string) => {setSelectedCourse(id); resetForm()}} selected={selected} courseLessons={courseLessons} form={form} setForm={setForm} file={file} setFile={setFile} saveLesson={saveLesson} removeLesson={removeLesson} resetForm={() => resetForm(courseLessons.length + 1)} loading={loading} uploadPct={uploadPct}/>} {tab === 'students' && <Students rows={rows} progress={progress} lessonCounts={lessonCounts} toggleBlock={toggleBlockStudent} exportCSV={exportCSV} activeBroadcast={activeBroadcast} broadcastMsg={broadcastMsg} setBroadcastMsg={setBroadcastMsg} sendBroadcast={sendBroadcast} clearBroadcast={clearBroadcast} loading={loading}/>} {tab === 'payments' && <Payments rows={rows} paid={paid} revenue={revenue}/>} {tab === 'community' && <CommunityManager/>} {tab === 'offer' && <OfferSettings offerSettings={offerSettings} setOfferSettings={setOfferSettings} saveOffer={saveOffer} loading={loading}/>} {tab === 'settings' && <Settings settings={settings} setSettings={setSettings} thumbnail={thumbnail} setThumbnail={setThumbnail} saveSettings={saveSettings} loading={loading}/>}</main></div>;
+  return <div className="adminPage"><style>{adminStyles}</style><aside className="adminSidebar"><button className="sidebarBrand" onClick={() => setTab('overview')}><img src="/assets/jtrader-logo.png" alt="JTrader Academy"/><span>JTRADER<small>ACADEMY</small></span></button><div className="sidebarLabel">WORKSPACE</div><nav>{navItems.map(([key, icon, label]) => <button key={key} className={tab === key ? 'active' : ''} onClick={() => setTab(key)}><i>{icon}</i>{label}{key === 'course' && lessons.length > 0 && <b>{lessons.length}</b>}</button>)}</nav><div className="sidebarBottom"><div className="sidebarTip"><span>◒</span><div><b>Keep learning moving</b><small>Manage every lesson in one place.</small></div></div><button className="sidebarLogout" onClick={() => setEntered(false)}>↪ <span>Logout</span></button></div></aside><main className="adminMain"><header className="adminHeader"><div className="mobileBrand"><img src="/assets/jtrader-logo.png" alt="JTrader"/><b>JTRADER</b></div><div className="headerTitle"><span className="headerCrumb">JTRADER ACADEMY <b>/</b></span><h1>Admin Dashboard</h1></div><div className="headerProfile"><div className="profileAvatar">JA</div><div><b>JTrader Admin</b><small>Administrator</small></div><button onClick={() => setEntered(false)}>⌄</button></div></header>{newPayments.length > 0 && <div className="adminAlert success" style={{flexDirection:'column',alignItems:'flex-start',gap:'6px'}}><div style={{display:'flex',justifyContent:'space-between',width:'100%'}}><b>🔔 {newPayments.length} new payment{newPayments.length>1?'s':''} since your last visit!</b><button onClick={()=>setNewPayments([])}>×</button></div>{newPayments.map((s:any,i:number)=><div key={i} style={{fontSize:'9px',opacity:.85}}>💰 {s.name||s.email} — ₹{Number(s.amount||0).toLocaleString('en-IN')}</div>)}</div>}{error && <div className="adminAlert error">{error}<button onClick={() => setError('')}>×</button></div>}{notice && <div className="adminAlert success">{notice}<button onClick={() => setNotice('')}>×</button></div>}{tab === 'overview' && <Overview courses={courses} lessons={lessons} rows={rows} paid={paid} revenue={revenue} openCourse={openCourse}/>} {tab === 'courses' && <Courses courses={courses} lessons={lessons} openCourse={openCourse} saveCourse={saveCourse} setCourseStatus={setCourseStatus} loading={loading}/>} {tab === 'course' && <CourseManager courses={courses} selectedCourse={selectedCourse} setSelectedCourse={(id: string) => {setSelectedCourse(id); resetForm()}} selected={selected} courseLessons={courseLessons} form={form} setForm={setForm} file={file} setFile={setFile} saveLesson={saveLesson} removeLesson={removeLesson} resetForm={() => resetForm(courseLessons.length + 1)} loading={loading} uploadPct={uploadPct}/>} {tab === 'students' && <Students rows={rows} progress={progress} lessonCounts={lessonCounts} toggleBlock={toggleBlockStudent} exportCSV={exportCSV} activeBroadcast={activeBroadcast} broadcastMsg={broadcastMsg} setBroadcastMsg={setBroadcastMsg} sendBroadcast={sendBroadcast} clearBroadcast={clearBroadcast} loading={loading}/>} {tab === 'payments' && <Payments rows={rows} paid={paid} revenue={revenue}/>} {tab === 'community' && <CommunityManager/>} {tab === 'offer' && <OfferSettings offerSettings={offerSettings} setOfferSettings={setOfferSettings} saveOffer={saveOffer} loading={loading}/>} {tab === 'settings' && <Settings settings={settings} setSettings={setSettings} thumbnail={thumbnail} setThumbnail={setThumbnail} saveSettings={saveSettings} loading={loading}/>} {tab === 'account' && <AccountSettings/>}</main></div>;
 }
 
 function Overview({courses, lessons, rows, paid, revenue, openCourse}: {courses: Course[]; lessons: Lesson[]; rows: Student[]; paid: number; revenue: number; openCourse: (id: string) => void}) {
@@ -565,6 +566,109 @@ function OfferSettings({offerSettings, setOfferSettings, saveOffer, loading}: {o
         </div>
         <button className="adminPrimary" style={{marginTop:'22px'}} onClick={saveOffer} disabled={loading}>{loading?'Saving...':'Save offer settings →'}</button>
       </section>
+    </div>
+  );
+}
+
+function AccountSettings() {
+  const [step, setStep] = useState<'idle'|'otp'>('idle');
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [newPw, setNewPw] = useState('');
+  const [msg, setMsg] = useState('');
+  const [err, setErr] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    api('/api/auth').then((d: any) => setEmail(d?.user?.email || '')).catch(() => {});
+  }, []);
+
+  async function sendOtp() {
+    setBusy(true); setErr(''); setMsg('');
+    try {
+      await api('/api/auth?action=forgot-password', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email}),
+      });
+      setMsg('OTP sent to your email. Valid for 10 minutes.');
+      setStep('otp');
+    } catch (e: any) {
+      setErr(e.message || 'Failed to send OTP');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function resetPw() {
+    setBusy(true); setErr(''); setMsg('');
+    try {
+      await api('/api/auth?action=reset-password', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({email, otp, newPassword: newPw}),
+      });
+      setMsg('Password changed successfully.');
+      setStep('idle'); setOtp(''); setNewPw('');
+    } catch (e: any) {
+      setErr(e.message || 'Invalid OTP or password too short');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const inputStyle: React.CSSProperties = {
+    display:'block',width:'100%',background:'#08101a',border:'1px solid #294158',
+    borderRadius:'8px',color:'#fff',padding:'12px',font:'inherit',fontSize:'12px',
+    outline:'none',boxSizing:'border-box',
+  };
+
+  return (
+    <div className="adminContent">
+      <div className="welcomeRow" style={{alignItems:'start'}}>
+        <div>
+          <span className="eyebrow">ADMIN</span>
+          <h2>Account Settings</h2>
+          <p>Manage your admin account security.</p>
+        </div>
+      </div>
+      <div className="panel" style={{maxWidth:'460px',marginTop:'24px',padding:'28px'}}>
+        <h3 style={{margin:'0 0 5px',fontSize:'15px'}}>Change Password</h3>
+        <p style={{color:'#7a8899',fontSize:'11px',margin:'0 0 20px',lineHeight:1.6}}>
+          An OTP will be sent to your registered email. Enter it below along with your new password.
+        </p>
+        {msg && <div style={{color:'#6ed9aa',fontSize:'11px',marginBottom:'14px',padding:'10px 14px',background:'rgba(21,52,38,.6)',borderRadius:'8px',border:'1px solid rgba(100,210,160,.2)'}}>{msg}</div>}
+        {err && <div style={{color:'#ff9eaa',fontSize:'11px',marginBottom:'14px',padding:'10px 14px',background:'rgba(53,28,38,.6)',borderRadius:'8px',border:'1px solid rgba(180,80,100,.2)'}}>{err}</div>}
+        <div style={{marginBottom:'16px'}}>
+          <label style={{display:'block',color:'#7f8a99',fontSize:'9px',letterSpacing:'1px',marginBottom:'6px'}}>YOUR EMAIL</label>
+          <div style={{background:'#0a0f17',border:'1px solid #1f2c3a',borderRadius:'8px',padding:'12px',color:'#8a9baf',fontSize:'12px'}}>{email || '—'}</div>
+        </div>
+        {step === 'idle' && (
+          <button className="adminPrimary" onClick={sendOtp} disabled={busy || !email}>
+            {busy ? 'Sending…' : 'Send OTP to email →'}
+          </button>
+        )}
+        {step === 'otp' && (
+          <>
+            <div style={{marginBottom:'12px'}}>
+              <label style={{display:'block',color:'#7f8a99',fontSize:'9px',letterSpacing:'1px',marginBottom:'6px'}}>6-DIGIT OTP</label>
+              <input style={inputStyle} value={otp} onChange={e=>setOtp(e.target.value)} maxLength={6} placeholder="Enter OTP from email"/>
+            </div>
+            <div style={{marginBottom:'18px'}}>
+              <label style={{display:'block',color:'#7f8a99',fontSize:'9px',letterSpacing:'1px',marginBottom:'6px'}}>NEW PASSWORD</label>
+              <input style={inputStyle} type="password" value={newPw} onChange={e=>setNewPw(e.target.value)} placeholder="Minimum 8 characters"/>
+            </div>
+            <div style={{display:'flex',gap:'10px',flexWrap:'wrap'}}>
+              <button className="adminPrimary" onClick={resetPw} disabled={busy || !otp || !newPw}>
+                {busy ? 'Updating…' : 'Update Password →'}
+              </button>
+              <button onClick={()=>{setStep('idle');setOtp('');setNewPw('');setErr('');setMsg('');}} style={{border:'1px solid #27313d',padding:'11px 17px',borderRadius:'8px',fontSize:'11px',color:'#8a9baf',background:'none',cursor:'pointer'}}>
+                Cancel
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

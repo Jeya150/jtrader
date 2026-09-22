@@ -175,7 +175,7 @@ function RootShell({ children }: { children: ReactNode }) {
               "name": "JTrader Academy",
               "url": "https://jtrader.in",
               "logo": "https://jtrader.in/assets/jtrader-logo.png",
-              "description": "Best online stock market and options trading course in India",
+              "description": "Practical trading education for Indian markets",
               "founder": {"@type": "Person", "name": "Jeya Akash"},
               "sameAs": ["https://jtrader.in"]
             },
@@ -208,7 +208,7 @@ function RootShell({ children }: { children: ReactNode }) {
             }
           ]
         })}}/>
-        <meta name="keywords" content="stock market course India, options trading course, share market course, trading course online, learn options trading, best trading course India, JTrader Academy, options trading Tamil Nadu, stock market training"/>
+        <meta name="keywords" content="stock market course India, options trading course, share market course, trading course online, learn options trading, JTrader Academy, options trading Tamil Nadu, stock market training"/>
         <meta name="robots" content="index, follow"/>
         <link rel="canonical" href="https://jtrader.in"/>
       </head>
