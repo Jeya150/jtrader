@@ -512,7 +512,8 @@ function Home(){
                     <div><small>OPTION TRADING COURSE</small><h2>Option Trading</h2></div>
                     <span style={{display:"flex",alignItems:"center",gap:"10px"}}>
                       {optionPurchased&&<span>{lessons.length} Videos</span>}
-                      {!optionPurchased&&<button className="primary" style={{fontSize:"10px",padding:"8px 14px"}} onClick={()=>{setViewCourse('option-trading');setTab("course");}}>Buy – {COURSES['option-trading'].priceStr}</button>}
+                      {!optionPurchased&&COURSES['option-trading'].status!=='coming_soon'&&<button className="primary" style={{fontSize:"10px",padding:"8px 14px"}} onClick={()=>{setViewCourse('option-trading');setTab("course");}}>Buy – {COURSES['option-trading'].priceStr}</button>}
+                      {!optionPurchased&&COURSES['option-trading'].status==='coming_soon'&&<b style={{color:'#f5c842',fontSize:"11px"}}>Coming Soon</b>}
                     </span>
                   </header>
                   {!optionPurchased?(
@@ -883,9 +884,12 @@ function Home(){
             <section className="locked">
               <h3>Option Trading Course required</h3>
               <p>The community is exclusive to Option Trading Course students.</p>
-              <button className="primary" style={{marginTop:"16px"}} onClick={()=>{setViewCourse('option-trading');setTab("course");}}>
-                Buy Option Trading Course →
-              </button>
+              {COURSES['option-trading'].status==='coming_soon'
+                ? <p style={{color:'#f5c842',marginTop:"12px",fontSize:"13px",fontWeight:700}}>🔔 Option Trading Course — Coming Soon</p>
+                : <button className="primary" style={{marginTop:"16px"}} onClick={()=>{setViewCourse('option-trading');setTab("course");}}>
+                    Buy Option Trading Course →
+                  </button>
+              }
             </section>
           ) : (()=>{
             const adminPosts=posts.filter((p:any)=>p.section==='admin');
