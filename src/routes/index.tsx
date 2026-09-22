@@ -659,7 +659,7 @@ function Home(){
                               : <button onClick={()=>{setViewCourse(courseId);setTab("course");}} style={{background:`linear-gradient(135deg,${accentColor},${accentColor}cc)`,color:'#fff',padding:"10px 18px",borderRadius:"8px",fontSize:"11px",fontWeight:900}}>Enroll Now →</button>
                           }
                           {c.status!=='coming_soon'&&(
-                            <button onClick={()=>toggleCurriculum(courseId)} style={{fontSize:"11px",color:"#8ca0b8",background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.12)",borderRadius:"8px",padding:"10px 14px",cursor:"pointer"}}>
+                            <button onClick={()=>toggleCurriculum(courseId)} style={{fontSize:"11px",color:"#fff",background:`linear-gradient(135deg,${accentColor},${accentColor}cc)`,border:"none",borderRadius:"8px",padding:"10px 18px",cursor:"pointer",fontWeight:900}}>
                               {expanded?'▲ Hide Course Topics':'▼ View Course Topics'}
                             </button>
                           )}
