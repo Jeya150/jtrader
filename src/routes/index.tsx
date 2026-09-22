@@ -434,12 +434,14 @@ function Home(){
               <small>BASIC COURSE</small>
               <b>Basic of Share Market</b>
               <span style={{color:basicPurchased?"#55e0d0":"#f0b45d"}}>{basicPurchased?`${completedBasic.size}/${basicLessons.length} done`:"Not purchased"}</span>
+              {basicPurchased&&me?.courses?.basic&&<small style={{color:"#94a3b8",fontSize:"9px",display:"block",marginTop:"3px"}}>Valid till {new Date(me.courses.basic).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</small>}
             </div>
 
             {(optionPurchased||!COURSES['option-trading'].hidden)&&<div>
               <small>OPTION COURSE</small>
               <b>Option Trading Course</b>
               <span style={{color:optionPurchased?"#55e0d0":"#f0b45d"}}>{optionPurchased?`${completedOption.size}/${lessons.length} done`:"Not purchased"}</span>
+              {optionPurchased&&me?.courses?.option&&<small style={{color:"#94a3b8",fontSize:"9px",display:"block",marginTop:"3px"}}>Valid till {new Date(me.courses.option).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</small>}
             </div>}
 
             <div>
@@ -612,13 +614,11 @@ function Home(){
           </section>
 
           <OfferCycleBanner
-          basicPrice={COURSES['basic-share-market'].status==='coming_soon'?undefined:COURSES['basic-share-market'].price}
-          optionPrice={COURSES['option-trading'].status==='coming_soon'?undefined:COURSES['option-trading'].price}
-          basicOldPrice={COURSES['basic-share-market'].oldPrice}
-          optionOldPrice={COURSES['option-trading'].oldPrice}
-basicOldPrice={COURSES['basic-share-market'].oldPrice}
-          optionOldPrice={COURSES['option-trading'].oldPrice}
-        />
+            basicPrice={basicPurchased||COURSES['basic-share-market'].status==='coming_soon'?undefined:COURSES['basic-share-market'].price}
+            optionPrice={optionPurchased||COURSES['option-trading'].status==='coming_soon'?undefined:COURSES['option-trading'].price}
+            basicOldPrice={COURSES['basic-share-market'].oldPrice}
+            optionOldPrice={COURSES['option-trading'].oldPrice}
+          />
 
           <div className="courseCardsNew">
 
@@ -1241,8 +1241,10 @@ basicOldPrice={COURSES['basic-share-market'].oldPrice}
       >
 
         <OfferCycleBanner
-          basicPrice={COURSES['basic-share-market'].status==='coming_soon'?undefined:COURSES['basic-share-market'].price}
-          optionPrice={COURSES['option-trading'].status==='coming_soon'?undefined:COURSES['option-trading'].price}
+          basicPrice={basicPurchased||COURSES['basic-share-market'].status==='coming_soon'?undefined:COURSES['basic-share-market'].price}
+          optionPrice={optionPurchased||COURSES['option-trading'].status==='coming_soon'?undefined:COURSES['option-trading'].price}
+          basicOldPrice={COURSES['basic-share-market'].oldPrice}
+          optionOldPrice={COURSES['option-trading'].oldPrice}
         />
 
         <div className="sectionHeadNew">

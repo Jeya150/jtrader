@@ -21,6 +21,7 @@ export default function OfferCycleBanner({basicPrice,optionPrice,basicOldPrice,o
   },[]);
 
   if(!settings.enabled) return null;
+  if(basicPrice===undefined&&optionPrice===undefined) return null;
 
   const cycleMs=settings.cycleHours*60*60*1000;
   const cycleStart=Math.floor(now/cycleMs)*cycleMs;
