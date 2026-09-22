@@ -1596,9 +1596,9 @@ footer{background:rgba(3,5,10,.85)!important;backdrop-filter:blur(20px)!importan
 .brand img,.logo img,.mobileBrand img,.adminLoginBrand img{filter:brightness(0) invert(1)!important}
 
 /* ── ALL INPUTS READABLE ── */
-input,textarea,select{background:#090d13!important;border:1px solid rgba(255,255,255,.12)!important;color:#f0f4fc!important}
-input::placeholder,textarea::placeholder{color:#5f7a9a!important;opacity:1!important}
-input:focus,textarea:focus{border-color:rgba(77,143,255,.5)!important;color:#fff!important}
+input,textarea,select{background:rgba(255,255,255,.07)!important;border:1.5px solid rgba(255,255,255,.28)!important;color:#f0f4fc!important;border-radius:8px!important}
+input::placeholder,textarea::placeholder{color:#8ca0b8!important;opacity:1!important;font-size:13px!important}
+input:focus,textarea:focus{background:rgba(255,255,255,.10)!important;border-color:rgba(100,160,255,.65)!important;box-shadow:0 0 0 3px rgba(77,143,255,.15)!important;color:#fff!important}
 
 /* ── ALL TEXT VISIBLE ON DARK BACKGROUND ── */
 .lesson h3,.lessonList header h2,.enroll h2,.head h2,.dashboard h2,.stats b,.welcomeDashboard h1,.pageHero h1,.manageCard h2,.price,.courseBody h3,.sectionHeadNew h2,.joinBand h2,.featureStrip b,.courseQuote b,.row b,.accessBar b,.tableHead h2,.cta h2,.cta h3,.lessonList header h2,.pageHero h2{color:#f0f4fc!important}
