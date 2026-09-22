@@ -1322,9 +1322,11 @@ function Home(){
       </section>
 
       {/* About / Founder Section */}
-      <section style={{width:"min(860px,92%)",margin:"0 auto 80px"}}>
+      <section style={{width:"min(1160px,92%)",margin:"0 auto 80px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:"60px",alignItems:"start"}}>
+
+        <div>
           <small style={{color:"#d4af37",fontSize:"9px",letterSpacing:"2.5px",fontWeight:900}}>ABOUT THE FOUNDER</small>
-          <h2 style={{fontSize:"clamp(28px,4vw,42px)",letterSpacing:"-1.5px",margin:"12px 0 20px",lineHeight:1.1}}>Jeya Akash</h2>
+          <h2 style={{fontSize:"clamp(28px,4vw,42px)",letterSpacing:"-1.5px",margin:"12px 0 20px",lineHeight:1.1,color:"#f0f4fc"}}>Jeya Akash</h2>
           <p style={{color:"#94a3b8",lineHeight:1.85,fontSize:"15px",marginBottom:"16px"}}>
             Three years. Every popular strategy. Countless hours watching charts.
           </p>
@@ -1340,6 +1342,36 @@ function Home(){
               <span style={{fontWeight:400,fontSize:"15px",color:"#94a3b8"}}>Don't work for money — let the money work for you.</span>
             </p>
           </div>
+        </div>
+
+        <div style={{background:"rgba(10,18,42,.75)",backdropFilter:"blur(20px)",border:"1px solid rgba(212,175,55,.22)",borderRadius:"20px",padding:"32px",boxShadow:"0 8px 40px rgba(0,0,0,.45)"}}>
+          <small style={{color:"#d4af37",fontSize:"9px",letterSpacing:"2.5px",fontWeight:900}}>ABOUT THE COURSE</small>
+          <h3 style={{fontSize:"22px",margin:"12px 0 22px",lineHeight:1.25,color:"#f0f4fc",letterSpacing:"-0.5px"}}>One strategy. One indicator.<br/>Real profits — simply.</h3>
+          {([
+            ["📈","Simple & powerful","One proven strategy with a single indicator. Pure clarity — no noise, no overload."],
+            ["🎯","Clean entries & exits","No guesswork. You know exactly when to enter and exit every single trade."],
+            ["🚫","Zero clutter","Forget juggling 5–10 indicators. One is all you need when you truly understand it."],
+          ] as [string,string,string][]).map(([icon,title,desc])=>(
+            <div key={title} style={{display:"flex",gap:"14px",marginBottom:"18px",alignItems:"flex-start"}}>
+              <span style={{fontSize:"18px",marginTop:"2px",flexShrink:0}}>{icon}</span>
+              <div>
+                <b style={{display:"block",fontSize:"13px",color:"#f0f4fc",marginBottom:"3px"}}>{title}</b>
+                <span style={{fontSize:"12px",color:"#8ca0b8",lineHeight:1.6}}>{desc}</span>
+              </div>
+            </div>
+          ))}
+          <div style={{marginTop:"22px",padding:"18px 20px",background:"rgba(212,175,55,.08)",border:"1px solid rgba(212,175,55,.28)",borderRadius:"12px",display:"flex",gap:"18px",alignItems:"center"}}>
+            <div style={{textAlign:"center",flexShrink:0}}>
+              <div style={{fontSize:"26px",fontWeight:950,color:"#d4af37",letterSpacing:"-1px",lineHeight:1}}>1:2–3</div>
+              <div style={{fontSize:"8px",color:"#d4af37",letterSpacing:"1.5px",marginTop:"5px",fontWeight:700}}>RISK : REWARD</div>
+            </div>
+            <div style={{borderLeft:"1px solid rgba(212,175,55,.2)",paddingLeft:"16px"}}>
+              <b style={{display:"block",fontSize:"13px",color:"#f0f4fc",marginBottom:"4px"}}>Consistent ROI on every trade</b>
+              <span style={{fontSize:"12px",color:"#8ca0b8",lineHeight:1.6}}>My strategy targets a minimum 1:2 and up to 1:3 risk-to-reward — maximising gains while keeping losses small.</span>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <footer>
@@ -1394,6 +1426,7 @@ const responsiveCss=`
 /* ── Tablet (≤768px) ── */
 @media(max-width:768px){
   .aboutSection{grid-template-columns:1fr!important;gap:30px!important}
+  section[style*="min(1160px,92%)"][style*="grid"]{grid-template-columns:1fr!important;gap:28px!important}
   nav{padding:0 4%}
   .brand span{font-size:11px}
   .page{padding:60px 0}
