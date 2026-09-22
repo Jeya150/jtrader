@@ -321,7 +321,25 @@ function Metric({icon, label, value, tone}: {icon: string; label: string; value:
 function CourseCard({course, lessonCount, accent, openCourse}: {course: Course; lessonCount: number; accent: string; openCourse: (id: string) => void}) { return <article className={`catalogueCard ${accent}`}><div className="catalogueVisual" style={{backgroundImage: `url('/assets/jtrader-cover.svg')`}}><span className="courseTag">{accent === 'green' ? 'FOUNDATIONS' : 'ADVANCED STRATEGY'}</span><span className="visualMark">↗</span></div><div className="catalogueBody"><div><span className="statusPill"><i/> Active</span><small>{lessonCount} video lessons</small></div><h4>{course.title}</h4><p>{course.description || 'Structured trading education with practical market examples.'}</p><div className="catalogueFooter"><b>₹{Number(course.price || 0).toLocaleString('en-IN')}</b><button className="manageButton" onClick={() => openCourse(course.id)}>Manage Course <span>→</span></button></div></div></article>; }
 function CourseEditPanel({course, saveCourse, setCourseStatus, loading}: {course: Course; saveCourse: any; setCourseStatus: any; loading: boolean}) {
   const [form, setForm] = useState({title: course.title, price: course.price, oldPrice: course.old_price||0, description: course.description||'', access: course.access||'lifetime'});
+  const [thumb, setThumb] = useState<File|null>(null);
+  const [thumbUploading, setThumbUploading] = useState(false);
   const set = (k: string, v: any) => setForm(f => ({...f, [k]: v}));
+
+  async function saveWithThumb() {
+    if (thumb) {
+      setThumbUploading(true);
+      try {
+        const fd = new FormData();
+        fd.append('action','course-thumbnail');
+        fd.append('courseId', course.id);
+        fd.append('thumbnail', thumb);
+        await api('/api/admin', {method:'POST', body: fd});
+        setThumb(null);
+      } catch(e:any) { /* thumbnail upload failed silently, continue */ }
+      finally { setThumbUploading(false); }
+    }
+    saveCourse(course.id, form);
+  }
   return (
     <section className="panel" style={{marginTop: '14px', padding: '20px'}}>
       <div className="panelHeader" style={{marginBottom: '14px'}}><div><span className="eyebrow">EDIT COURSE</span><h3>{course.title}</h3></div></div>
@@ -362,7 +380,16 @@ function CourseEditPanel({course, saveCourse, setCourseStatus, loading}: {course
         {(course.status||'active')==='coming_soon'&&<p style={{color:'#f5c842',fontSize:'10px',margin:'6px 0 0'}}>⚠️ Course shows as "Coming Soon" — price is hidden, students cannot buy.</p>}
         {(course.status||'active')==='hidden'&&<p style={{color:'#ff9eaa',fontSize:'10px',margin:'6px 0 0'}}>⚠️ Course is completely hidden from all student pages.</p>}
       </label>
-      <button className="adminPrimary" style={{marginTop:'14px'}} onClick={() => saveCourse(course.id, form)} disabled={loading}>{loading ? 'Saving...' : 'Save changes →'}</button>
+      <label style={{display:'block',color:'#8194a9',fontSize:'9px',marginTop:'14px'}}>Course thumbnail
+        <label className="videoUpload thumbnailUpload" style={{marginTop:'6px',cursor:'pointer'}}>
+          <span className="uploadIcon">▧</span>
+          <b>{thumb ? thumb.name : course.thumbnail_key ? '✓ Thumbnail uploaded — click to replace' : 'Upload course thumbnail'}</b>
+          <small>JPG, PNG or WebP · shown on the course card</small>
+          <input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>setThumb(e.target.files?.[0]||null)}/>
+        </label>
+        {course.thumbnail_key&&!thumb&&<img src={`/api/media?key=${encodeURIComponent(course.thumbnail_key)}`} alt="Current thumbnail" style={{marginTop:'8px',width:'100%',maxHeight:'120px',objectFit:'cover',borderRadius:'8px',border:'1px solid #1e2d3e'}}/>}
+      </label>
+      <button className="adminPrimary" style={{marginTop:'14px'}} onClick={saveWithThumb} disabled={loading||thumbUploading}>{thumbUploading?'Uploading thumbnail…':loading ? 'Saving...' : 'Save changes →'}</button>
     </section>
   );
 }

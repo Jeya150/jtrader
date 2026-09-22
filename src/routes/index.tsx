@@ -235,7 +235,8 @@ function Home(){
     const status=row?.status||'active';
     // Hide from unpurchased students when absent (hidden) OR coming_soon
     const hidden=courseList.length>0&&(!row||row.status==='coming_soon');
-    return {id,title:row?.title||d.title,subtitle:row?.description||d.subtitle,tag:d.tag,features:d.features,price,oldPrice,priceStr:`Rs.${price.toLocaleString('en-IN')}`,status,hidden};
+    const thumbnailKey=row?.thumbnail_key||null;
+    return {id,title:row?.title||d.title,subtitle:row?.description||d.subtitle,tag:d.tag,features:d.features,price,oldPrice,priceStr:`Rs.${price.toLocaleString('en-IN')}`,status,hidden,thumbnailKey};
   }
   const COURSES={
     'basic-share-market':getCourse('basic-share-market'),
@@ -624,9 +625,9 @@ function Home(){
 
             {courseList.some(c=>c.id==='basic-share-market') && (()=>{const c=COURSES['basic-share-market'];return(
             <article className="courseNew basicCourse">
-              <div className="courseVisual">
+              <div className="courseVisual" style={c.thumbnailKey?{backgroundImage:`url(/api/media?key=${encodeURIComponent(c.thumbnailKey)})`,backgroundSize:'cover',backgroundPosition:'center'}:{}}>
                 <span>{c.status==='coming_soon'?'COMING SOON':'BEGINNER FRIENDLY'}</span>
-                <div className="miniChart greenChart">↗</div>
+                {!c.thumbnailKey&&<div className="miniChart greenChart">↗</div>}
               </div>
               <div className="courseBody">
                 <h3>BASIC OF<br/>SHARE MARKET</h3>
@@ -645,9 +646,9 @@ function Home(){
 
             {courseList.some(c=>c.id==='option-trading') && (()=>{const c=COURSES['option-trading'];return(
             <article className="courseNew optionCourse">
-              <div className="courseVisual">
+              <div className="courseVisual" style={c.thumbnailKey?{backgroundImage:`url(/api/media?key=${encodeURIComponent(c.thumbnailKey)})`,backgroundSize:'cover',backgroundPosition:'center'}:{}}>
                 <span>{c.status==='coming_soon'?'COMING SOON':'MOST POPULAR'}</span>
-                <div className="miniChart redChart">⚡</div>
+                {!c.thumbnailKey&&<div className="miniChart redChart">⚡</div>}
               </div>
               <div className="courseBody">
                 <h3>OPTION<br/>TRADING COURSE</h3>
@@ -1261,7 +1262,7 @@ function Home(){
 
           {courseList.some(c=>c.id==='basic-share-market') && <article className="courseNew basicCourse">
 
-            <div className="courseVisual">
+            <div className="courseVisual" style={COURSES['basic-share-market'].thumbnailKey?{backgroundImage:`url(/api/media?key=${encodeURIComponent(COURSES['basic-share-market'].thumbnailKey)})`,backgroundSize:'cover',backgroundPosition:'center'}:{}}>
               <span>{COURSES['basic-share-market'].status==='coming_soon'?'COMING SOON':'BEGINNER FRIENDLY'}</span>
             </div>
 
@@ -1290,7 +1291,7 @@ function Home(){
 
           {courseList.some(c=>c.id==='option-trading') && <article className="courseNew optionCourse">
 
-            <div className="courseVisual">
+            <div className="courseVisual" style={COURSES['option-trading'].thumbnailKey?{backgroundImage:`url(/api/media?key=${encodeURIComponent(COURSES['option-trading'].thumbnailKey)})`,backgroundSize:'cover',backgroundPosition:'center'}:{}}>
               <span>{COURSES['option-trading'].status==='coming_soon'?'COMING SOON':'MOST POPULAR'}</span>
             </div>
 
