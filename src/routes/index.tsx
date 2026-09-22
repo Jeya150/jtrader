@@ -1,4 +1,4 @@
-import {createFileRoute} from '@tanstack/react-router';import {useEffect,useState} from 'react';import Admin from '../components/admin-dashboard';import OfferCycleBanner from '../components/offer-cycle-banner';import WatermarkedVideo from '../components/watermarked-video';import '../admin-public.css';import '../course-security.css';
+import {createFileRoute} from '@tanstack/react-router';import {useEffect,useState} from 'react';import Admin from '../components/admin-dashboard';import OfferCycleBanner from '../components/offer-cycle-banner';import WatermarkedVideo from '../components/watermarked-video';import SocialProofPopup from '../components/social-proof-popup';import '../admin-public.css';import '../course-security.css';
 export const Route=createFileRoute('/')({component:Home});
 const api=(p:string,o?:RequestInit)=>fetch(p,o).then(async r=>{const x=await r.json().catch(()=>({}));if(!r.ok)throw Error(x.error||'Request failed');return x});
 
@@ -1350,6 +1350,7 @@ basicOldPrice={COURSES['basic-share-market'].oldPrice}
         <span>© 2026 JTrader Academy</span>
       </footer>
 
+      <SocialProofPopup/>
     </div>
   );
 }
