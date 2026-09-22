@@ -436,15 +436,15 @@ function Home(){
               <span style={{color:basicPurchased?"#55e0d0":"#f0b45d"}}>{basicPurchased?`${completedBasic.size}/${basicLessons.length} done`:"Not purchased"}</span>
             </div>
 
-            <div>
+            {(optionPurchased||!COURSES['option-trading'].hidden)&&<div>
               <small>OPTION COURSE</small>
               <b>Option Trading Course</b>
               <span style={{color:optionPurchased?"#55e0d0":"#f0b45d"}}>{optionPurchased?`${completedOption.size}/${lessons.length} done`:"Not purchased"}</span>
-            </div>
+            </div>}
 
             <div>
               <small>TOTAL VIDEOS</small>
-              <b>{basicLessons.length+lessons.length}</b>
+              <b>{basicLessons.length+(optionPurchased?lessons.length:0)}</b>
               <span>{completedBasic.size+completedOption.size} completed</span>
             </div>
 
@@ -482,8 +482,8 @@ function Home(){
                         <div style={{flex:1,cursor:"pointer"}} onClick={()=>setSelectedLesson(lesson)}>
                           <h3 style={{textDecoration:done?"line-through":"none",opacity:done?.6:1}}>{lesson.title||"Untitled Lesson"}</h3>
                           <p>{lesson.description||"Course lesson"}</p>
+                          <small style={{color:"#5f8fff",fontSize:"10px",marginTop:"3px",display:"block"}}>▶ {getDuration(lesson)}</small>
                         </div>
-                        <small>▶ {getDuration(lesson)}</small>
                       </div>
                     );})
                   )}
@@ -510,8 +510,8 @@ function Home(){
                         <div style={{flex:1,cursor:"pointer"}} onClick={()=>setSelectedLesson(lesson)}>
                           <h3 style={{textDecoration:done?"line-through":"none",opacity:done?.6:1}}>{lesson.title||"Untitled Lesson"}</h3>
                           <p>{lesson.description||"Course lesson"}</p>
+                          <small style={{color:"#5f8fff",fontSize:"10px",marginTop:"3px",display:"block"}}>▶ {getDuration(lesson)}</small>
                         </div>
-                        <small>▶ {getDuration(lesson)}</small>
                       </div>
                     );})
                   )}

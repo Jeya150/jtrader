@@ -35,7 +35,7 @@ export const Route=createFileRoute('/api/data')({
 
           const r=await db()
             .prepare(
-              'SELECT id,title,module,description,position,video_key,course_id FROM lessons WHERE course_id=? ORDER BY position'
+              'SELECT id,title,module,description,position,video_key,course_id,duration FROM lessons WHERE course_id=? ORDER BY position'
             )
             .bind(courseId)
             .all();

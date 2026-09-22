@@ -556,20 +556,14 @@ export const Route = createFileRoute('/api/admin')({
           /*
            * CREATE NEW LESSON
            */
+          const dur = d.duration ? Number(d.duration) : null;
+
           if (d.action === 'lesson-create') {
             await db()
               .prepare(
                 `INSERT INTO lessons
-                (
-                  id,
-                  course_id,
-                  title,
-                  module,
-                  position,
-                  description,
-                  video_key
-                )
-                VALUES(?,?,?,?,?,?,?)`
+                (id,course_id,title,module,position,description,video_key,duration)
+                VALUES(?,?,?,?,?,?,?,?)`
               )
               .bind(
                 crypto.randomUUID(),
@@ -578,7 +572,8 @@ export const Route = createFileRoute('/api/admin')({
                 d.module || '',
                 Number(d.position || 1),
                 d.description || '',
-                key || null
+                key || null,
+                dur
               )
               .run();
           }
@@ -595,7 +590,8 @@ export const Route = createFileRoute('/api/admin')({
                      module=?,
                      position=?,
                      description=?,
-                     video_key=?
+                     video_key=?,
+                     duration=COALESCE(?,duration)
                  WHERE id=?`
               )
               .bind(
@@ -605,6 +601,7 @@ export const Route = createFileRoute('/api/admin')({
                 Number(d.position || 1),
                 d.description || '',
                 key || null,
+                dur,
                 d.id
               )
               .run();
