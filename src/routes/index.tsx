@@ -233,8 +233,8 @@ function Home(){
     const price=Number(row?.price??(id==='basic-share-market'?1500:9999));
     const oldPrice=row?.old_price?Number(row.old_price):undefined;
     const status=row?.status||'active';
-    // If the API loaded but this course is absent, the admin set it to hidden.
-    const hidden=courseList.length>0&&!row;
+    // Hide from unpurchased students when absent (hidden) OR coming_soon
+    const hidden=courseList.length>0&&(!row||row.status==='coming_soon');
     return {id,title:row?.title||d.title,subtitle:row?.description||d.subtitle,tag:d.tag,features:d.features,price,oldPrice,priceStr:`Rs.${price.toLocaleString('en-IN')}`,status,hidden};
   }
   const COURSES={
@@ -634,7 +634,9 @@ basicOldPrice={COURSES['basic-share-market'].oldPrice}
                 <div className="courseBottom">
                   {c.status==='coming_soon'
                     ? <b style={{color:'#f5c842',fontSize:"16px"}}>Coming Soon</b>
-                    : <><b>{c.priceStr}</b><button onClick={()=>{setViewCourse('basic-share-market');setTab("course");}}>View Course →</button></>
+                    : basicPurchased
+                      ? <button onClick={()=>{setDashCourseTab('basic-share-market');setTab("dashboard");}}>Start Learning →</button>
+                      : <><b>{c.priceStr}</b><button onClick={()=>{setViewCourse('basic-share-market');setTab("course");}}>View Course →</button></>
                   }
                 </div>
               </div>
@@ -653,7 +655,9 @@ basicOldPrice={COURSES['basic-share-market'].oldPrice}
                 <div className="courseBottom">
                   {c.status==='coming_soon'
                     ? <b style={{color:'#f5c842',fontSize:"16px"}}>Coming Soon</b>
-                    : <><b>{c.priceStr}</b><button onClick={()=>{setViewCourse('option-trading');setTab("course");}}>View Course →</button></>
+                    : optionPurchased
+                      ? <button onClick={()=>{setDashCourseTab('option-trading');setTab("dashboard");}}>Start Learning →</button>
+                      : <><b>{c.priceStr}</b><button onClick={()=>{setViewCourse('option-trading');setTab("course");}}>View Course →</button></>
                   }
                 </div>
               </div>
