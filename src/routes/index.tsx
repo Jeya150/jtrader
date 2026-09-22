@@ -634,85 +634,77 @@ function Home(){
             optionOldPrice={COURSES['option-trading'].oldPrice}
           />
 
-          <div className="courseCardsNew">
+          <div style={{display:"grid",gridTemplateColumns:"1fr",gap:"0"}}>
 
-            {courseList.some(c=>c.id==='basic-share-market') && (()=>{const c=COURSES['basic-share-market'];const expanded=expandedCourse==='basic-share-market';return(
-            <div style={{gridColumn:'1/-1'}}>
-            <article className="courseNew basicCourse" style={{gridColumn:'unset'}}>
-              <div className="courseVisual" style={c.thumbnailKey?{backgroundImage:`url(/api/media?key=${encodeURIComponent(c.thumbnailKey)})`,backgroundSize:'cover',backgroundPosition:'center'}:{}}>
-                <span>{c.status==='coming_soon'?'COMING SOON':'BEGINNER FRIENDLY'}</span>
-                {!c.thumbnailKey&&<div className="miniChart greenChart">↗</div>}
-              </div>
-              <div className="courseBody">
-                <h3>BASIC OF SHARE MARKET</h3>
-                <p>Understand how the share market works, key concepts, how to read stock prices and analysis basics.</p>
-                <div className="courseBottom">
-                  {c.status==='coming_soon'
-                    ? <b style={{color:'#f5c842',fontSize:"16px"}}>Coming Soon</b>
-                    : basicPurchased
-                      ? <button onClick={()=>{setDashCourseTab('basic-share-market');setTab("dashboard");}}>Start Learning →</button>
-                      : <><b>{c.priceStr}</b><button onClick={()=>{setViewCourse('basic-share-market');setTab("course");}}>Enroll →</button></>
-                  }
-                  {c.status!=='coming_soon'&&<button onClick={()=>toggleCurriculum('basic-share-market')} style={{marginLeft:"8px",fontSize:"10px",color:"#8ca0b8",background:"none",border:"1px solid rgba(255,255,255,.12)",borderRadius:"6px",padding:"8px 12px"}}>{expanded?'▲ Hide topics':'▼ View topics'}</button>}
-                </div>
-              </div>
-            </article>
-            {expanded&&<div style={{background:"rgba(10,18,42,.75)",border:"1px solid rgba(59,130,246,.2)",borderTop:"none",borderRadius:"0 0 16px 16px",padding:"8px 0"}}>
-              {(curriculum['basic-share-market']||[]).length===0
-                ? <p style={{color:"#5f7a9a",fontSize:"12px",textAlign:"center",padding:"20px"}}>Loading topics…</p>
-                : (curriculum['basic-share-market']||[]).map((l,i)=>(
-                  <div key={l.id} style={{display:"flex",gap:"14px",alignItems:"center",padding:"12px 22px",borderBottom:"1px solid rgba(255,255,255,.05)"}}>
-                    <span style={{color:"#3b82f6",fontSize:"11px",fontWeight:700,minWidth:"24px"}}>{String(i+1).padStart(2,'0')}</span>
-                    <div>
-                      <b style={{fontSize:"13px",color:"#f0f4fc",display:"block"}}>{l.title}</b>
-                      {l.module&&<small style={{color:"#5f7a9a",fontSize:"10px"}}>{l.module}</small>}
-                    </div>
-                    <span style={{marginLeft:"auto",color:"#3b82f6",fontSize:"10px"}}>▶ Video</span>
-                  </div>
-                ))
-              }
-            </div>}
-            </div>
-            );})()}
+            {(()=>{
+              const renderCourse=(courseId:'basic-share-market'|'option-trading',label:string,desc:string,accentColor:string,purchased:boolean)=>{
+                const c=COURSES[courseId];
+                const expanded=expandedCourse===courseId;
+                const topics=curriculum[courseId]||[];
+                if(!courseList.some(x=>x.id===courseId)) return null;
+                return(
+                  <div key={courseId} style={{gridColumn:'1/-1',marginBottom:"20px"}}>
+                    <article className={`courseNew ${courseId==='basic-share-market'?'basicCourse':'optionCourse'}`} style={{borderRadius:expanded?"18px 18px 0 0":"18px"}}>
+                      <div className="courseVisual" style={c.thumbnailKey?{backgroundImage:`url(/api/media?key=${encodeURIComponent(c.thumbnailKey)})`,backgroundSize:'cover',backgroundPosition:'center'}:{}}>
+                        <span>{c.status==='coming_soon'?'COMING SOON':label}</span>
+                      </div>
+                      <div className="courseBody">
+                        <h3 style={{fontSize:"clamp(18px,2.5vw,26px)"}}>{courseId==='basic-share-market'?'Basic of Share Market':'Option Trading Course'}</h3>
+                        <p>{desc}</p>
+                        <div className="courseBottom" style={{flexWrap:"wrap",gap:"10px"}}>
+                          {c.status==='coming_soon'
+                            ? <b style={{color:'#f5c842',fontSize:"16px"}}>Coming Soon</b>
+                            : purchased
+                              ? <button onClick={()=>{setDashCourseTab(courseId);setTab("dashboard");}}>Start Learning →</button>
+                              : <button onClick={()=>{setViewCourse(courseId);setTab("course");}} style={{background:`linear-gradient(135deg,${accentColor},${accentColor}cc)`,color:'#fff',padding:"10px 18px",borderRadius:"8px",fontSize:"11px",fontWeight:900}}>Enroll Now →</button>
+                          }
+                          {c.status!=='coming_soon'&&(
+                            <button onClick={()=>toggleCurriculum(courseId)} style={{fontSize:"11px",color:"#8ca0b8",background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.12)",borderRadius:"8px",padding:"10px 14px",cursor:"pointer"}}>
+                              {expanded?'▲ Hide Course Topics':'▼ View Course Topics'}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </article>
 
-            {courseList.some(c=>c.id==='option-trading') && (()=>{const c=COURSES['option-trading'];const expanded=expandedCourse==='option-trading';return(
-            <div style={{gridColumn:'1/-1'}}>
-            <article className="courseNew optionCourse" style={{gridColumn:'unset'}}>
-              <div className="courseVisual" style={c.thumbnailKey?{backgroundImage:`url(/api/media?key=${encodeURIComponent(c.thumbnailKey)})`,backgroundSize:'cover',backgroundPosition:'center'}:{}}>
-                <span>{c.status==='coming_soon'?'COMING SOON':'MOST POPULAR'}</span>
-                {!c.thumbnailKey&&<div className="miniChart redChart">⚡</div>}
-              </div>
-              <div className="courseBody">
-                <h3>OPTION TRADING COURSE</h3>
-                <p>Learn options, strategies, risk management and practical trade execution with real market examples.</p>
-                <div className="courseBottom">
-                  {c.status==='coming_soon'
-                    ? <b style={{color:'#f5c842',fontSize:"16px"}}>Coming Soon</b>
-                    : optionPurchased
-                      ? <button onClick={()=>{setDashCourseTab('option-trading');setTab("dashboard");}}>Start Learning →</button>
-                      : <><b>{c.priceStr}</b><button onClick={()=>{setViewCourse('option-trading');setTab("course");}}>Enroll →</button></>
-                  }
-                  {c.status!=='coming_soon'&&<button onClick={()=>toggleCurriculum('option-trading')} style={{marginLeft:"8px",fontSize:"10px",color:"#8ca0b8",background:"none",border:"1px solid rgba(255,255,255,.12)",borderRadius:"6px",padding:"8px 12px"}}>{expanded?'▲ Hide topics':'▼ View topics'}</button>}
-                </div>
-              </div>
-            </article>
-            {expanded&&<div style={{background:"rgba(10,18,42,.75)",border:"1px solid rgba(245,158,11,.2)",borderTop:"none",borderRadius:"0 0 16px 16px",padding:"8px 0"}}>
-              {(curriculum['option-trading']||[]).length===0
-                ? <p style={{color:"#5f7a9a",fontSize:"12px",textAlign:"center",padding:"20px"}}>Loading topics…</p>
-                : (curriculum['option-trading']||[]).map((l,i)=>(
-                  <div key={l.id} style={{display:"flex",gap:"14px",alignItems:"center",padding:"12px 22px",borderBottom:"1px solid rgba(255,255,255,.05)"}}>
-                    <span style={{color:"#d97706",fontSize:"11px",fontWeight:700,minWidth:"24px"}}>{String(i+1).padStart(2,'0')}</span>
-                    <div>
-                      <b style={{fontSize:"13px",color:"#f0f4fc",display:"block"}}>{l.title}</b>
-                      {l.module&&<small style={{color:"#5f7a9a",fontSize:"10px"}}>{l.module}</small>}
-                    </div>
-                    <span style={{marginLeft:"auto",color:"#d97706",fontSize:"10px"}}>▶ Video</span>
+                    {expanded&&(
+                      <div style={{background:"rgba(8,15,35,.9)",border:`1px solid ${accentColor}33`,borderTop:"none",borderRadius:"0 0 18px 18px"}}>
+                        <div style={{padding:"14px 22px 8px",borderBottom:"1px solid rgba(255,255,255,.07)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                          <b style={{fontSize:"11px",color:"#f0f4fc",letterSpacing:"1px"}}>COURSE CURRICULUM</b>
+                          <span style={{fontSize:"10px",color:"#5f7a9a"}}>{topics.length} topics</span>
+                        </div>
+                        {topics.length===0
+                          ? <p style={{color:"#5f7a9a",fontSize:"12px",textAlign:"center",padding:"24px"}}>Loading…</p>
+                          : topics.map((l,i)=>(
+                            <div key={l.id} style={{display:"flex",gap:"14px",alignItems:"center",padding:"13px 22px",borderBottom:"1px solid rgba(255,255,255,.04)"}}>
+                              <span style={{color:accentColor,fontSize:"11px",fontWeight:700,minWidth:"24px",flexShrink:0}}>{String(i+1).padStart(2,'0')}</span>
+                              <div style={{flex:1,minWidth:0}}>
+                                <b style={{fontSize:"13px",color:"#f0f4fc",display:"block",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{l.title}</b>
+                                {l.module&&<small style={{color:"#5f7a9a",fontSize:"10px"}}>{l.module}</small>}
+                              </div>
+                              <span style={{color:accentColor,fontSize:"10px",flexShrink:0}}>▶</span>
+                            </div>
+                          ))
+                        }
+                        {!purchased&&c.status!=='coming_soon'&&(
+                          <div style={{padding:"18px 22px"}}>
+                            <button onClick={()=>{setViewCourse(courseId);setTab("course");}} style={{width:"100%",background:`linear-gradient(135deg,${accentColor},${accentColor}cc)`,color:'#fff',padding:"14px",borderRadius:"10px",fontSize:"13px",fontWeight:900,border:"none",cursor:"pointer"}}>
+                              Enroll in this course — {c.priceStr}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
-                ))
-              }
-            </div>}
-            </div>
-            );})()}
+                );
+              };
+              return(
+                <>
+                  {renderCourse('basic-share-market','BEGINNER FRIENDLY','Understand how the share market works, key concepts, how to read stock prices and analysis basics.','#3b82f6',basicPurchased)}
+                  {renderCourse('option-trading','MOST POPULAR','Learn options, strategies, risk management and practical trade execution with real market examples.','#d97706',optionPurchased)}
+                </>
+              );
+            })()}
 
           </div>
 
