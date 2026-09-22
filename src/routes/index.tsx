@@ -1585,6 +1585,46 @@ h1,h2,h3{text-shadow:1px 1px 0 rgba(0,0,0,.5),2px 2px 0 rgba(0,0,0,.35),3px 3px 
 /* ── Price gradient ── */
 .courseBottom>b{background:linear-gradient(135deg,#60a5fa,#4d8fff,#818cf8)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important;font-size:34px!important;letter-spacing:-1px!important;text-shadow:none!important}
 .optionCourse .courseBottom>b{background:linear-gradient(135deg,#d4af37,#f5c842,#fbbf24)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}
+
+/* ── GLOBAL DARK THEME TEXT FIX — every page ── */
+/* Headings */
+.lesson h3,.lessonList header h2,.enroll h2,.pageHero h1,.head h2,.dashboard h2,.manageCard h2,.stats b,.price,.welcomeDashboard h1,.courseBody h3,.sectionHeadNew h2,.joinBand h2,.heroCopy h1,.featureStrip b{color:#f0f4fc!important}
+/* Body / muted text */
+.lesson p,.lesson small,.enroll p,.enroll li,.head p,.feature p,.step p,.card p,.community article small,.courseBody p,.courseMeta,.courseQuote,.videoPending,.upload span{color:#94a3b8!important}
+/* Inputs & textareas — dark bg, white text */
+.signup input,.adminLogininput,.tableHead input,.community textarea,.manageCard input,.manageCard textarea,.settingsCard input,.settingsCard textarea,.signup select{background:rgba(10,18,42,.85)!important;border:1px solid rgba(255,255,255,.1)!important;color:#f0f4fc!important}
+/* Table rows */
+.row{color:#94a3b8!important}.row b{color:#f0f4fc!important}.th{color:#64748b!important}
+/* Admin nav tabs */
+.adminNav button{background:rgba(255,255,255,.05)!important;border:1px solid rgba(255,255,255,.1)!important;color:#94a3b8!important}
+.adminNav .active{background:linear-gradient(135deg,#c9a227,#f5c842)!important;color:#060d1c!important;border-color:transparent!important}
+/* Access bar */
+.accessBar{background:rgba(10,18,42,.8)!important;border-color:rgba(255,255,255,.08)!important;color:#94a3b8!important}
+/* Stats text in dashboard */
+.stats>div small,.stats>div span{color:#94a3b8!important}
+.stats>div b{color:#f0f4fc!important}
+/* Lesson complete circle */
+.lesson>button{border-color:rgba(255,255,255,.15)!important}
+/* Upload area */
+.upload{border-color:rgba(255,255,255,.15)!important}
+.upload b{color:#f0f4fc!important}
+/* Locked */
+.locked{color:#64748b!important}
+/* Price crossed */
+.price s{color:#64748b!important}
+/* Community text area placeholder */
+.community textarea::placeholder,.signup input::placeholder,.manageCard input::placeholder{color:#475569!important}
+/* Section headings in dashboard */
+.head small,.pageHero small,.enroll>small,.signup small,.dashboard small{color:#d4af37!important}
+/* Nav muted text / bar */
+.bar{color:#94a3b8!important}
+/* Feature icons */
+.featureStrip strong{color:#d4af37!important}
+/* Join band text */
+.joinBand p{color:#94a3b8!important}
+/* Course body text for dark cards */
+.courseNew .courseBody p{color:#94a3b8!important}
+.courseNew .courseBody h3{color:#f0f4fc!important}
 `;
 
 const videoCss=`.videoModal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}.videoModalInner{background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;width:min(860px,96vw);max-height:92vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.15)}.videoModalHeader{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;border-bottom:1px solid #e8dfd0}.videoModalHeader h3{margin:0;font-size:17px;font-weight:700;color:#0f172a}.videoModalClose{font-size:20px;color:#94a3b8;line-height:1;padding:4px 8px;border-radius:6px}.videoModalClose:hover{background:#f1f5f9;color:#1a2332}.videoModalBody{padding:18px}.protectedVideo{position:relative;width:100%}.protectedVideo video{width:100%;border-radius:8px;background:#000;display:block}.videoWatermark{position:absolute;font-size:10px;color:rgba(255,255,255,.55);pointer-events:none;line-height:1.5;user-select:none;transition:top .6s ease,left .6s ease}.videoWatermark b{display:block;font-size:11px;font-weight:700}.videoWatermark span{display:block;opacity:.8}.watermarkNote{display:block;margin-top:8px;color:#94a3b8;font-size:9px;letter-spacing:.5px}.lessonClickable{cursor:pointer;transition:background .15s}.lessonClickable:hover{background:#eff6ff}`;
