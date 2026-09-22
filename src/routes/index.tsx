@@ -1364,7 +1364,7 @@ function Home(){
       </section>
 
       {/* About / Founder Section */}
-      <section style={{width:"min(1160px,92%)",margin:"0 auto 80px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:"60px",alignItems:"start"}}>
+      <section className="founderSection" style={{width:"min(1160px,92%)",margin:"0 auto 80px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:"60px",alignItems:"start"}}>
 
         <div>
           <small style={{color:"#d4af37",fontSize:"9px",letterSpacing:"2.5px",fontWeight:900}}>ABOUT THE FOUNDER</small>
@@ -1636,6 +1636,33 @@ footer{background:rgba(3,5,10,.85)!important;backdrop-filter:blur(20px)!importan
 
 /* ── Logo white on dark ── */
 .brand img,.logo img,.mobileBrand img,.adminLoginBrand img{filter:brightness(0) invert(1)!important}
+
+/* ── Mobile responsive ── */
+@media(max-width:768px){
+  .founderSection{grid-template-columns:1fr!important;gap:28px!important}
+  .founderSection>div:last-child{margin-top:0!important}
+  .dashCourseTabBar{flex-wrap:wrap}
+  .lessonList header{flex-wrap:wrap;gap:8px}
+  .lessonList header span{flex-wrap:wrap}
+  .stats{grid-template-columns:1fr 1fr!important}
+  .courseCardsNew,.featureStrip{grid-template-columns:1fr!important}
+  .heroNew{grid-template-columns:1fr!important;padding:40px 0!important}
+  .founderStage{display:none!important}
+  .heroStats{gap:16px!important;flex-wrap:wrap}
+  .heroStats div{padding-right:16px!important;border-right:1px solid rgba(255,255,255,.1)!important}
+  .signup{grid-template-columns:1fr!important}
+  .courseGrid{grid-template-columns:1fr!important}
+  nav{padding:0 4%!important}
+  .links{gap:14px!important}
+  .links button{font-size:11px!important}
+  .navBtn,.primary{font-size:10px!important;padding:9px 12px!important}
+  .page,.section{padding:50px 0!important}
+  .pageHero{padding:14px 0 36px!important}
+  .pageHero h1{font-size:36px!important;letter-spacing:-2px!important}
+  .cta{padding:28px!important;display:block!important}
+  .cta .primary{margin-top:16px!important;width:100%!important}
+  .enroll{position:static!important}
+}
 
 /* ── ALL INPUTS READABLE ── */
 input,textarea,select{background:rgba(255,255,255,.07)!important;border:1.5px solid rgba(255,255,255,.28)!important;color:#f0f4fc!important;border-radius:8px!important}
